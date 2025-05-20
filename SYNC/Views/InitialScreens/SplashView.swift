@@ -1,51 +1,75 @@
-//
-//  SplashView.swift
-//  SYNC
-//
-//  Created by Marcus Tiffen (CODING) on 23/10/2024.
-//
-
+import Firebase
+import FirebaseAuth
 import SwiftUI
 
+
 struct SplashView: View {
-    
-    @State private var showSignInView: Bool = false
+    @State private var showCreateOrSignInView: Bool = false
     @State private var isActive: Bool = false
+    @EnvironmentObject var profileModel: ProfileModel
+    @EnvironmentObject var signUpModel: SignUpModel
+    @EnvironmentObject var chatRoomsManager: ChatRoomsManager
+    @EnvironmentObject var completeUsersModel: CompleteUsersModel
+    @Environment(\.colorScheme) var colorScheme
     
+    @State var isLoading: Bool = false
+    @State var loadingViewFinishedLoading = false
+    
+    @State private var bannedMessage: String = ""
+    
+    @State private var loadingMessage = ""
+
     var body: some View {
         ZStack {
-            if self.isActive {
+            if isActive {
                 NavigationStack {
-                    ContentView(showSignInView: $showSignInView)
+                    ContentView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading, bannedMessage: bannedMessage)
                 }
             } else {
                 splashView
             }
         }
         .onAppear {
-            // Logic to load data first
-            showSignInView = true // set to true for now
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            Task {
+                await loadData()
                 withAnimation {
-                    self.isActive = true
+                    isActive = true
                 }
             }
         }
-    }
-    
-    private var splashView: some View {
-        Group {
-            Rectangle()
-                .fill(.blue)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea()
-            Text("Splash Screen")
-                .foregroundStyle(.white)
+        .fullScreenCover(isPresented: $isLoading) {} content: {
+            LoadingView(isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading, loadingMessage: $signUpModel.loadingMessage)
         }
     }
-}
 
-#Preview {
-    SplashView()
+    private var splashView: some View {
+        ZStack {
+            Color.syncWhite
+                .ignoresSafeArea()
+            
+            AnimatedLogoView(isExpanded: false, animationDuration: 1.5)
+                .offset(x: 0, y: 0)
+        }
+    }
+
+    private func loadData() async {
+        if let user = await profileModel.loadCurrentUser() {
+            if user.isBanned == false {
+                loadingMessage = "Loading profile..."
+                isLoading = true
+                chatRoomsManager.addListenerChatRooms(userId: user.uid)
+                completeUsersModel.callAllListenersForUser(userId: user.uid)
+                showCreateOrSignInView = false
+                loadingViewFinishedLoading = true
+            } else {
+                bannedMessage = "You have been banned from Syncc"
+                showCreateOrSignInView = true
+                loadingViewFinishedLoading = false
+            }
+        } else {
+            print("No authenticated user found.")
+            showCreateOrSignInView = true
+        }
+    }
+    
 }

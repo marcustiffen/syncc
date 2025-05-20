@@ -1,0 +1,143 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "2778C153",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6742053831",
+    "_developerTeamID" : "3GVGPA52LY",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 767753995.52706897,
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21678233",
+      "localizations" : [
+
+      ],
+      "name" : "Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "129.0",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6745236888",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "All Access",
+              "displayName" : "All Access",
+              "locale" : "en_AU"
+            }
+          ],
+          "productID" : "syncc_19900_1y",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Annual, $199.00",
+          "subscriptionGroupID" : "21678233",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "12.9",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6745237358",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "All Access",
+              "displayName" : "All Access",
+              "locale" : "en_AU"
+            }
+          ],
+          "productID" : "syncc_1990_1m",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly, $19.90",
+          "subscriptionGroupID" : "21678233",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
