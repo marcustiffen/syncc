@@ -8,15 +8,6 @@ import RevenueCat
 class ProfileModel: ObservableObject {
     
     @Published var user: DBUser? = nil
-    
-//    @Published var isSubscriptionActive = false
-//    init() {
-//        Purchases.shared.getCustomerInfo { (customerInfo, error) in
-//            self.isSubscriptionActive = customerInfo?.entitlements.all["Premium"]?.isActive == true
-//        }
-//    }
-    
-    
 
     private let db = Firestore.firestore()
     private var userListener: ListenerRegistration? = nil
@@ -44,89 +35,65 @@ class ProfileModel: ObservableObject {
                 return
             }
             
-            self.user = data // Update the user property in real-time
+            self.user = data
         }
     }
     
 
-    func removeListener() {
-        userListener?.remove()
-        userListenerRegistered = false
-    }
-    
-        
-//    func deleteUser() async throws {
-//        guard let uid = user?.uid else { return }
-//        Auth.auth().currentUser?.delete { error in
-//            switch error {
-//            case .none:
-//                print("No error")
-//            default :
-//                print("user deletion success")
-//            }
-//        }
-//        DBUserManager.shared.deleteUser(uid: uid) { error in
-//            switch error {
-//            case .success(let success):
-//                Task {
-//                    if !self.userCancellables.isEmpty {
-//                        self.userCancellables.removeAll()
-//                    }
-//                    self.removeListener()
-//                    CompleteUsersModel().removeAllListeners()
-//                    MessagesManager.shared.removeListener()
-//                    ChatRoomsManager().removeListener()
-//                    self.user = nil
-//                    print("Successfully deleted user: \(success)")
-//                }
-//            case .failure(let failure):
-//                print("Failed to delete user: \(failure)")
-//            }
-//        }
-//    }
-    
     func deleteUser(uid: String, email: String, password: String) async throws {
-        guard let user = Auth.auth().currentUser else { return }
+        guard let user = Auth.auth().currentUser else {
+            throw ProfileModelError.userNotFound
+        }
 
         let credential = EmailAuthProvider.credential(withEmail: email, password: password)
 
-        user.reauthenticate(with: credential) { authResult, error in
-            if let error = error {
-                print("Reauthentication failed: \(error.localizedDescription)")
-                return
+        // Convert callback-based reauthenticate to async/await
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            user.reauthenticate(with: credential) { authResult, error in
+                if let error = error {
+                    print("Reauthentication failed: \(error.localizedDescription)")
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: ())
             }
-
+        }
+        
+        // Convert callback-based delete to async/await
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             user.delete { error in
                 if let error = error {
                     print("Failed to delete user from Auth: \(error.localizedDescription)")
+                    continuation.resume(throwing: error)
                     return
                 }
-
                 print("Firebase Auth user deleted successfully")
-
-                // Proceed to delete user data from your database
-                DBUserManager.shared.deleteUser(uid: uid) { error in
-                    switch error {
-                    case .success(let success):
-                        Task {
-                            if !self.userCancellables.isEmpty {
-                                self.userCancellables.removeAll()
-                            }
-                            self.removeListener()
-                            CompleteUsersModel().removeAllListeners()
-                            MessagesManager.shared.removeListener()
-                            ChatRoomsManager().removeListener()
-                            self.user = nil
-                            print("Successfully deleted user: \(success)")
+                continuation.resume(returning: ())
+            }
+        }
+        
+        // Convert DBUserManager delete to async/await
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            DBUserManager.shared.deleteUser(uid: uid) { error in
+                switch error {
+                case .success(let success):
+                    Task { @MainActor in
+                        if !self.userCancellables.isEmpty {
+                            self.userCancellables.removeAll()
                         }
-                    case .failure(let failure):
-                        print("Failed to delete user: \(failure)")
+                        self.removeListener()
+//                        CompleteUsersModel().removeAllListeners()
+                        self.user = nil
+                        print("Successfully deleted user: \(success)")
                     }
+                    continuation.resume(returning: ())
+                case .failure(let failure):
+                    print("Failed to delete user: \(failure)")
+                    continuation.resume(throwing: failure)
                 }
             }
         }
     }
-
 
     
     func loadCurrentUser() async -> DBUser? {
@@ -148,6 +115,18 @@ class ProfileModel: ObservableObject {
         }
     }
     
+    
+    func removeListener() {
+        userListener?.remove()
+        userListenerRegistered = false
+    }
+    
+    
+    func resetNonAdmin(uid: String) async {
+        await DBUserManager.shared.updateNonPremiumUserInfo(uid: uid)
+    }
+    
+    
     func setUserDeviceToken(uid: String) async {
         if let token = UserDefaults.standard.string(forKey: "FCMToken") {
             await DBUserManager.shared.updateFCMTokenForUser(uid: uid, token: token)
@@ -157,9 +136,10 @@ class ProfileModel: ObservableObject {
     
     func signOut() throws {
         removeListener()
-        CompleteUsersModel().removeAllListeners()
-        MessagesManager.shared.removeListener()
-        ChatRoomsManager().removeListener()
+//        CompleteUsersModel().removeAllListeners()
+//        MessagesManager.shared.removeListener()
+//        ChatRoomsManager().removeListener()
+//        ChatRoomsManager().startListening(for: userId)
         try Auth.auth().signOut()
         self.user = nil
         print("User on device: \(String(describing: user))")

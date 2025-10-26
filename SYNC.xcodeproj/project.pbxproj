@@ -49,21 +49,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EA0222F92D8BBB4D0073DE9C /* Exceptions for "SYNC" folder in "SYNCTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				SynccStoreFile.storekit,
-			);
-			target = EACA72B22CC90A67009E2C9B /* SYNCTests */;
-		};
-		EA0222FA2D8BBB4D0073DE9C /* Exceptions for "SYNC" folder in "SYNCUITests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				SynccStoreFile.storekit,
-			);
-			target = EACA72BC2CC90A67009E2C9B /* SYNCUITests */;
-		};
-		EA519CF82D70A09B0097E54A /* Exceptions for "SYNC" folder in "SYNC" target */ = {
+		EA8FD08F2DF92FF600C7D884 /* Exceptions for "SYNC" folder in "SYNC" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -76,9 +62,7 @@
 		EACA72A52CC90A64009E2C9B /* SYNC */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				EA519CF82D70A09B0097E54A /* Exceptions for "SYNC" folder in "SYNC" target */,
-				EA0222F92D8BBB4D0073DE9C /* Exceptions for "SYNC" folder in "SYNCTests" target */,
-				EA0222FA2D8BBB4D0073DE9C /* Exceptions for "SYNC" folder in "SYNCUITests" target */,
+				EA8FD08F2DF92FF600C7D884 /* Exceptions for "SYNC" folder in "SYNC" target */,
 			);
 			path = SYNC;
 			sourceTree = "<group>";
@@ -491,16 +475,20 @@
 				CODE_SIGN_ENTITLEMENTS = SYNC/SYNC.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"SYNC/Preview Content\"";
 				DEVELOPMENT_TEAM = 3GVGPA52LY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SYNC/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Syncc;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -532,11 +520,14 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SYNC/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Syncc;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

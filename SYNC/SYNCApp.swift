@@ -7,8 +7,7 @@ import RevenueCat
 
 
 
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
-    
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Configure Firebase
         FirebaseApp.configure()
@@ -83,6 +82,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
         // Handle other notifications
         print("User tapped on notification: \(userInfo)")
+        
         completionHandler()
     }
 
@@ -111,17 +111,16 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 struct SYNCApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    @StateObject var chatRoomsManager = ChatRoomsManager()
+    @StateObject var likesReceivedViewModel = LikesReceivedViewModel()
+    @StateObject var subscriptionModel = SubscriptionModel()
+    
     var body: some Scene {
         WindowGroup {
             SplashView()
-//            FilteredFitnessGoalView(showCreateOrSignInView: .constant(true), isLoading: .constant(false), loadingViewFinishedLoading: .constant(false))
-//            EmailView(showCreateOrSignInView: .constant(true), isLoading: .constant(false), loadingViewFinishedLoading: .constant(false), showEmailLayer: .constant(true), showOnBoardingView: .constant(false))
-                .environmentObject(SignUpModel())
-                .environmentObject(ProfileModel())
-                .environmentObject(ChatRoomsManager())
-                .environmentObject(MessagesManager())
-                .environmentObject(CompleteUsersModel())
-                .environmentObject(SubscriptionModel())
+                .environmentObject(chatRoomsManager)
+                .environmentObject(likesReceivedViewModel)
+                .environmentObject(subscriptionModel)
         }
     }
 }

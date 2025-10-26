@@ -6,8 +6,6 @@
 	<array>
 		<string>com.marcustiffen.SYNC</string>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

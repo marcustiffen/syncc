@@ -1,28 +1,6 @@
 import Foundation
 
 
-struct FitnessGoal: Identifiable, Codable, Equatable {
-    var id: String
-    var goal: String
-    var emoji: String
-    
-    enum CodingKeys: String, CodingKey {
-        case id, goal, emoji
-    }
-    
-    init(id: String = "Unknown", goal: String = "Unknown", emoji: String = "Unkown") {
-        self.id = id
-        self.goal = goal
-        self.emoji = emoji
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decodeIfPresent(String.self, forKey: .id) ?? "Unknown"
-        goal = try container.decodeIfPresent(String.self, forKey: .goal) ?? "Unknown"
-        emoji = try container.decodeIfPresent(String.self, forKey: .emoji) ?? "Unknown"
-    }
-}
 
 enum StandardFitnessGoal: String, CaseIterable, Identifiable {
     case loseWeight = "Lose Weight"
@@ -68,58 +46,55 @@ enum StandardFitnessGoal: String, CaseIterable, Identifiable {
     
 
     var id: String { self.rawValue }
-    var emoji: String {
-        switch self {
-        case .loseWeight: return "⚖️"
-        case .buildMuscle: return "💪"
-        case .improveEndurance: return "🏃‍♂️"
-        case .increaseFlexibility: return "🤸‍♀️"
-        case .enhanceWellness: return "🌱"
-        case .toneBody: return "🏋️‍♀️"
-        case .boostStrength: return "🦾"
-        case .maintainFitness: return "✅"
-        case .rehabInjury: return "🩹"
-        case .sportPerformance: return "🏅"
-        case .stressRelief: return "🧘‍♀️"
-        case .dailyActivity: return "🚶‍♂️"
-        case .prepareEvent: return "🎯"
-        case .improveBalance: return "🤹‍♀️"
-        case .increaseEnergy: return "⚡️"
-        case .weightMaintenance: return "⚖️"
-//        case .healthyAging: return "🕰️"
-        case .postPregnancy: return "👶"
-        case .prenatalFitness: return "🤰"
-        case .heartHealth: return "❤️"
-        case .jointHealth: return "🦵"
-        case .boostImmunity: return "🛡️"
-        case .reduceBackPain: return "🪑"
-        case .reduceBloodPressure: return "🩸"
-        case .improveCoordination: return "🔄"
-        case .betterSleep: return "💤"
-        case .improveFocus: return "🎯"
-//        case .increaseStamina: return "🔥"
-//        case .metabolicHealth: return "🌡️"
-        case .diabetesManagement: return "🍎"
-        case .reduceCholesterol: return "🍳"
-        case .detoxifyBody: return "🧴"
-//        case .weightLiftingGoals: return "🏋️‍♂️"
-        case .improveRunning: return "🏃"
-        case .improveCycling: return "🚴"
-        case .improveSwimming: return "🏊"
-        case .yogaMastery: return "🧘"
-        case .functionalFitness: return "🛠️"
-        case .adventureReadiness: return "🏔️"
-//        case .outdoorFitness: return "🌳"
-//        case .mentalClarity: return "🧠"
-        case .spiritualHealth: return "🕊️"
-//        case .socialWellness: return "👥"
-//        case .careerWellness: return "📈"
-        case .martialArts: return "🥋"
-        case .selfDefense: return "🛡️"
-//        case .teamSports: return "⚽️"
-//        case .individualSports: return "🎾"
-        case .postureImprovement: return "🪑"
-        }
+}
+
+
+struct FitnessGoalHelper {
+    static let emojiForId: [String: String] = [
+        "Lose Weight": "⚖️",
+        "Build Muscle Mass": "💪",
+        "Improve Endurance": "🏃‍♂️",
+        "Increase Flexibility": "🤸‍♀️",
+        "Enhance Wellness": "🌱",
+        "Tone Body": "🏋️‍♀️",
+        "Boost Strength": "🦾",
+        "Maintain Fitness": "✅",
+        "Rehab from Injury": "🩹",
+        "Improve Sport Performance": "🏅",
+        "Relieve Stress": "🧘‍♀️",
+        "Improve Daily Activity": "🚶‍♂️",
+        "Prepare for an Event": "🎯",
+        "Improve Balance": "🤹‍♀️",
+        "Increase Energy": "⚡️",
+        "Maintain Weight": "⚖️",
+        "Post-Pregnancy Fitness": "👶",
+        "Prenatal Fitness": "🤰",
+        "Improve Heart Health": "❤️",
+        "Improve Joint Health": "🦵",
+        "Boost Immunity": "🛡️",
+        "Reduce Back Pain": "🪑",
+        "Reduce Blood Pressure": "🩸",
+        "Improve Coordination": "🔄",
+        "Better Sleep": "💤",
+        "Improve Focus": "🎯",
+        "Manage Diabetes": "🍎",
+        "Reduce Cholesterol": "🍳",
+        "Detoxify Body": "🧴",
+        "Improve Running": "🏃",
+        "Improve Cycling": "🚴",
+        "Improve Swimming": "🏊",
+        "Achieve Yoga Mastery": "🧘",
+        "Functional Fitness": "🛠️",
+        "Prepare for Adventures": "🏔️",
+        "Enhance Spiritual Health": "🕊️",
+        "Martial Arts Training": "🥋",
+        "Self-Defense Readiness": "🛡️",
+        "Improve Posture": "🪑"
+    ]
+    
+    static func emoji(for id: String) -> String {
+        emojiForId[id] ?? "❓"
     }
 }
+
 

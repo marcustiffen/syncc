@@ -3,30 +3,37 @@ import Foundation
 import FirebaseFirestore
 
 
+
 class MessagesManager: ObservableObject {
-        
-    static let shared = MessagesManager()
-    
-    @Published /*private(set) */var messages: [Message] = []
-    @Published var otherUser: DBUser? = nil
+    @Published var messages: [Message] = []
     
     private let db = Firestore.firestore()
-    
     private var messagesCancellables = Set<AnyCancellable>()
+    private var messagesListener: ListenerRegistration?
     
-    private var messagesListener: ListenerRegistration? = nil
+    // The chat room ID this manager is responsible for
+    private let chatRoomId: String
+    
+    // Initialize with a specific chat room ID
+    init(chatRoomId: String) {
+        self.chatRoomId = chatRoomId
+        startListening()
+    }
+    
+    deinit {
+        removeListener()
+    }
     
     private func chatRoomCollection() -> CollectionReference {
         db.collection("chatRooms")
     }
     
-    private func messagesCollection(chatRoomId: String) -> CollectionReference {
+    private func messagesCollection() -> CollectionReference {
         chatRoomCollection().document(chatRoomId).collection("messages")
     }
     
-    
-    func addListenerForChatRoom(chatRoomId: String) {
-        getMessages(for: chatRoomId) // Use the new method
+    private func startListening() {
+        getMessages()
             .sink { completion in
                 if case .failure(let error) = completion {
                     print("Error in chat room listener: \(error)")
@@ -37,33 +44,27 @@ class MessagesManager: ObservableObject {
             .store(in: &messagesCancellables)
     }
     
-    
-    func getMessages(for chatRoomId: String) -> AnyPublisher<[Message], any Error> {
-        let chatRoomMessagesCollection = messagesCollection(chatRoomId: chatRoomId).order(by: "timestamp")
+    private func getMessages() -> AnyPublisher<[Message], any Error> {
+        let chatRoomMessagesCollection = messagesCollection().order(by: "timestamp")
         let (publisher, listener) = chatRoomMessagesCollection.addSnapShotListener(as: Message.self)
         self.messagesListener = listener
         return publisher
     }
     
-    
     func removeListener() {
-        if !messagesCancellables.isEmpty {
-            messagesListener?.remove()
-            messagesCancellables.removeAll()
-        }
+        messagesListener?.remove()
+        messagesCancellables.removeAll()
     }
     
-    
-    func makeMessagesSeen(receivedMessages: [Message], chatRoomId: String) {        
+    func makeMessagesSeen(receivedMessages: [Message]) {
         for message in receivedMessages {
-            let messageRef = messagesCollection(chatRoomId: chatRoomId).document(message.id)
+            let messageRef = messagesCollection().document(message.id)
             messageRef.updateData(["seen": true])
         }
     }
     
-    
-    // Send a message to a specific chat room
-    func sendMessage(to chatRoomId: String, text: String, messageSender: DBUser, messageReceiver: DBUser) {
+    // Send a message to this chat room
+    func sendMessage(text: String, messageSender: DBUser, messageReceiver: DBUser) {
         do {
             let newMessage = Message(
                 id: "\(UUID())",
@@ -73,15 +74,9 @@ class MessagesManager: ObservableObject {
                 seen: false
             )
             
-            //            try db.collection("chatRooms")
-            //                .document(chatRoomId)
-            //                .collection("messages")
-            //                .document(newMessage.id)
-            //                .setData(from: newMessage)
-            try messagesCollection(chatRoomId: chatRoomId)
+            try messagesCollection()
                 .document(newMessage.id)
                 .setData(from: newMessage)
-            
             
             NotificationManager.shared.sendSingularPushNotification(token: messageReceiver.fcmToken!, message: text, title: messageSender.name!) { result in
                 switch result {
@@ -99,6 +94,15 @@ class MessagesManager: ObservableObject {
             print("Error sending message: \(error.localizedDescription)")
         }
     }
+    
+    func markAllReceivedMessagesAsSeen(currentUserId: String) {
+        let receivedMessages = messages.filter { message in
+            !message.seen && message.senderId != currentUserId
+        }
+        
+        if !receivedMessages.isEmpty {
+            makeMessagesSeen(receivedMessages: receivedMessages)
+        }
+    }
 }
-
 

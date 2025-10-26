@@ -26,6 +26,10 @@ class DBUserManager: ObservableObject {
         Firestore.firestore().collection("users")
     }
     
+    private func getAllUsersQuery() -> Query {
+        usersCollection()
+    }
+    
     private func userDocument(uid: String) -> DocumentReference {
         usersCollection().document(uid)
     }
@@ -81,16 +85,16 @@ class DBUserManager: ObservableObject {
             }.resume()
         }
     }
-    
+  
     
     func getUser(uid: String) async throws -> DBUser {
         try await userDocument(uid: uid).getDocument(as: DBUser.self)
     }
+
     
     
     func updateUser(_ user: DBUser) async throws {
         do {
-            // Update the user document in Firestore with the encoded data from the user object
             try userDocument(uid: user.uid).setData(from: user, merge: true)
             print("User successfully updated in Firestore.")
         } catch {
@@ -98,6 +102,18 @@ class DBUserManager: ObservableObject {
             throw error
         }
     }
+    
+    
+    func updateUserField(uid: String, field: String, value: Any) async throws {
+        do {
+            try await userDocument(uid: uid).updateData([field: value])
+            print("User successfully updated in Firestore.")
+        } catch {
+            print("Failed to update user in Firestore: \(error)")
+            throw error
+        }
+    }
+    
     
     func updateImageData(userId: String, updatedImage: DBImage) async throws {
         let userDoc = userDocument(uid: userId)
@@ -122,19 +138,6 @@ class DBUserManager: ObservableObject {
             throw NSError(domain: "Image not found", code: 404)
         }
     }
-
-    
-    
-//    func updateUserFields(userId: String, field: String ,value: Any) async throws {
-//        do {
-//            let data: [String: Any] = [
-//                field: value
-//            ]
-//            try await userDocument(uid: userId).setData(data, merge: true)
-//        } catch {
-//            print("Error updating user fields: \(error)")
-//        }
-//    }
     
     
     func updateFCMTokenForUser(uid: String, token: String) async {
@@ -144,42 +147,27 @@ class DBUserManager: ObservableObject {
             print("Error fetching or updating FCM token: \(error)")
         }
     }
+    
+    
+    func updateNonPremiumUserInfo(uid: String) async {
+        do {
+            let data: [String: Any] = [
+                "filteredFitnessTypes": [],
+                "filteredFitnessGoals": [],
+                "filteredFitnessLevel": "Any",
+                "blockedSex": "None"
+            ]
+            try await userDocument(uid: uid).setData(data, merge: true)
+        } catch {
+            print("Error fetching or updating FCM token: \(error)")
+        }
+    }
 }
 
 
 //MARK: Images
 extension DBUserManager {
-    //v1
-//    func uploadPhoto(selectedImages: [UIImage], uid: String) async -> [String] {
-//        var downloadURLs: [String] = []
-//        let storageRef = Storage.storage(url: "gs://sync-69d00.firebasestorage.app").reference()
-//        
-//        for selectedImage in selectedImages {
-//            if let imageData = selectedImage.jpegData(compressionQuality: 0.8) {
-//                let path = "images/\(uid)/\(UUID().uuidString).jpg"
-//                let fileRef = storageRef.child(path)
-//                
-//                do {
-//                    // Upload the image
-//                    _ = try await fileRef.putDataAsync(imageData)
-//                    
-//                    // Fetch the download URL
-//                    let downloadURL = try await fileRef.downloadURL()
-//                    downloadURLs.append(downloadURL.absoluteString)
-//                    
-//                    print("Successfully uploaded image and retrieved URL: \(downloadURL.absoluteString)")
-//                } catch {
-//                    print("Error uploading image or retrieving URL: \(error.localizedDescription)")
-//                }
-//            } else {
-//                print("Failed to convert image to JPEG format.")
-//            }
-//        }
-//        
-//        return downloadURLs
-//    }
     
-    //v2
     func uploadPhoto(selectedImages: [UIImage], uid: String) async -> [String] {
         let storageRef = Storage.storage(url: "gs://sync-69d00.firebasestorage.app").reference()
         

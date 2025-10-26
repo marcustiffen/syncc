@@ -12,7 +12,7 @@ struct DBLocation: Identifiable, Codable {
         case id, name, location
     }
     
-    init(id: UUID? = UUID(), name: String = "Unknown", location: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: -33.87271, longitude: 151.20569)) {
+    init(id: UUID? = UUID(), name: String = "Sydney", location: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: -33.87271, longitude: 151.20569)) {
         self.id = id
         self.name = name
         self.location = location
@@ -37,4 +37,15 @@ struct DBLocation: Identifiable, Codable {
         
         try container.encode(GeoPoint(latitude: location.latitude, longitude: location.longitude), forKey: .location)
     }
+    
+    func toFirestoreData() -> [String: Any] {
+        return [
+            "id": id?.uuidString ?? "",
+            "name": name,
+            "location": GeoPoint(latitude: location.latitude, longitude: location.longitude)
+        ]
+    }
 }
+
+
+

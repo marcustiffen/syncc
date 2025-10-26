@@ -3,11 +3,16 @@ import Firebase
 import SwiftUI
 
 
+
 class MatchMakingManager: ObservableObject {
     
     static let shared = MatchMakingManager()
         
     let db = Firestore.firestore()
+    
+    // Rate limiting
+    private var lastLikeTime: Date = Date.distantPast
+    private let minLikeInterval: TimeInterval = 0.5
     
     private func usersCollection() -> CollectionReference {
         db.collection("users")
@@ -21,138 +26,42 @@ class MatchMakingManager: ObservableObject {
         db.collection("users").document(uid).collection("likes_received")
     }
     
-    //MARK: Do not delete this function ever, it works a dream
-//    func sendLike(currentUserId: String, likedUserId: String, completion: @escaping (Result<String, Error>) -> Void) {
-//        do {
-//            // The Cloud Function URL
-//            guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/sendLike") else {
-//                print("Invalid URL.")
-//                return
-//            }
-//            
-//            // Prepare the request
-//            var request = URLRequest(url: url)
-//            request.httpMethod = "POST"
-//            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//            
-//            // Add the parameters
-//            let parameters: [String: Any] = [
-//                "currentUserId": currentUserId,
-//                "likedUserId": likedUserId
-//            ]
-//            
-//            do {
-//                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
-//            } catch {
-//                print("Error serializing JSON: \(error)")
-//                return
-//            }
-//            
-//            // Send the request
-//            URLSession.shared.dataTask(with: request) { data, response, error in
-//                if let error = error {
-//                    DispatchQueue.main.async {
-//                        completion(.failure(error))
-//                    }
-//                    return
-//                }
-//                
-//                guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-//                    DispatchQueue.main.async {
-//                        completion(.failure(NSError(domain: "Invalid response", code: 0, userInfo: nil)))
-//                    }
-//                    return
-//                }
-//                
-//                // Parse the response
-//                if let resultString = String(data: data, encoding: .utf8) {
-//                    DispatchQueue.main.async {
-//                        completion(.success(resultString))
-//                    }
-//                } else {
-//                    DispatchQueue.main.async {
-//                        completion(.failure(NSError(domain: "Data parsing error", code: 0, userInfo: nil)))
-//                    }
-//                }
-//            }.resume()
-//        }
-//    }
+    // MARK: - Modern async/await API
     
-    
-    func sendLike(currentUserId: String, likedUserId: String, isSubscriptionActive: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+    func sendLike(currentUserId: String, likedUserId: String, isSubscriptionActive: Bool) async throws {
+        // Rate limiting check
+        let now = Date()
+        if now.timeIntervalSince(lastLikeTime) < minLikeInterval {
+            throw MatchMakingError.rateLimited
+        }
+        lastLikeTime = now
+        
         if isSubscriptionActive {
-            unlimitedLikesFunction(currentUserId: currentUserId, likedUserId: likedUserId, completion: completion)
+            try await sendUnlimitedLike(currentUserId: currentUserId, likedUserId: likedUserId)
         } else {
-            nonSubscribedLikeFunction(currentUserId: currentUserId, likedUserId: likedUserId, completion: completion)
+            try await sendFreeLike(currentUserId: currentUserId, likedUserId: likedUserId)
         }
     }
     
-    private func unlimitedLikesFunction(currentUserId: String, likedUserId: String, completion: @escaping (Result<String, Error>) -> Void) {
-        do {
-            // The Cloud Function URL
-            guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/sendLike") else {
-                print("Invalid URL.")
-                return
-            }
-            
-            // Prepare the request
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            
-            // Add the parameters
-            let parameters: [String: Any] = [
-                "currentUserId": currentUserId,
-                "likedUserId": likedUserId
-            ]
-            
-            do {
-                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
-            } catch {
-                print("Error serializing JSON: \(error)")
-                return
-            }
-            
-            // Send the request
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
-                    }
-                    return
-                }
-                
-                guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                    DispatchQueue.main.async {
-                        completion(.failure(NSError(domain: "Invalid response", code: 0, userInfo: nil)))
-                    }
-                    return
-                }
-                
-                // Parse the response
-                if let resultString = String(data: data, encoding: .utf8) {
-                    DispatchQueue.main.async {
-                        completion(.success(resultString))
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        completion(.failure(NSError(domain: "Data parsing error", code: 0, userInfo: nil)))
-                    }
-                }
-            }.resume()
-        }
-    }
-    
-    
-    private func nonSubscribedLikeFunction(currentUserId: String, likedUserId: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/sendLikeFree") else {
-            print("Invalid URL")
-            return
+    private func sendUnlimitedLike(currentUserId: String, likedUserId: String) async throws {
+        print("Unlimited like sent")
+        guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/sendLike") else {
+            throw MatchMakingError.networkError("Invalid URL")
         }
         
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let parameters: [String: Any] = [
+            "currentUserId": currentUserId,
+            "likedUserId": likedUserId
+        ]
+        
+        try await performNetworkRequest(url: url, parameters: parameters)
+    }
+    
+    private func sendFreeLike(currentUserId: String, likedUserId: String) async throws {
+        print("Free like sent")
+        guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/sendLikeFree") else {
+            throw MatchMakingError.networkError("Invalid URL")
+        }
         
         let parameters: [String: Any] = [
             "currentUserId": currentUserId,
@@ -160,31 +69,56 @@ class MatchMakingManager: ObservableObject {
         ]
         
         do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+            try await performNetworkRequest(url: url, parameters: parameters)
         } catch {
-            completion(.failure(error))
-            return
+            // For free users, assume subscription errors mean they hit their limit
+            if error.localizedDescription.contains("limit") || error.localizedDescription.contains("subscription") {
+                throw MatchMakingError.subscriptionRequired
+            }
+            throw error
         }
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                completion(.failure(NSError(domain: "Invalid response", code: 0, userInfo: nil)))
-                return
-            }
-            
-            if let resultString = String(data: data, encoding: .utf8) {
-                completion(.success(resultString))
-            } else {
-                completion(.failure(NSError(domain: "Data parsing error", code: 0, userInfo: nil)))
-            }
-        }.resume()
     }
     
+    private func performNetworkRequest(url: URL, parameters: [String: Any]) async throws {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+        } catch {
+            throw MatchMakingError.networkError("Failed to serialize request")
+        }
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw MatchMakingError.invalidResponse
+            }
+            
+            guard httpResponse.statusCode == 200 else {
+                let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
+                
+                // Check for specific error types
+                if httpResponse.statusCode == 402 || errorMessage.contains("subscription") {
+                    throw MatchMakingError.subscriptionRequired
+                } else if httpResponse.statusCode == 429 {
+                    throw MatchMakingError.rateLimited
+                } else {
+                    throw MatchMakingError.networkError(errorMessage)
+                }
+            }
+            
+            print("Network request successful")
+        } catch {
+            if error is MatchMakingError {
+                throw error
+            } else {
+                throw MatchMakingError.networkError(error.localizedDescription)
+            }
+        }
+    }
     
     func dismissUser(currentUserId: String, dismissedUserId: String) async {
         do {
@@ -207,59 +141,71 @@ class MatchMakingManager: ObservableObject {
         }
     }
     
-    func unmatchUser(currentUserId: String, unmatchedUserId: String, completion: @escaping (Result<String, Error>) -> Void) {
-        do {
-            // The Cloud Function URL
-            guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/unmatchUser") else {
-                print("Invalid URL.")
-                return
-            }
-            
-            // Prepare the request
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            
-            // Add the parameters
-            let parameters: [String: Any] = [
-                "currentUserId": currentUserId,
-                "unmatchedUserId": unmatchedUserId
-            ]
-            
+    func unmatchUser(currentUserId: String, unmatchedUserId: String) async throws {
+        guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/unmatchUser") else {
+            throw MatchMakingError.networkError("Invalid URL")
+        }
+        
+        let parameters: [String: Any] = [
+            "currentUserId": currentUserId,
+            "unmatchedUserId": unmatchedUserId
+        ]
+        
+        try await performNetworkRequest(url: url, parameters: parameters)
+    }
+    
+    // MARK: - Legacy callback-based API (for backward compatibility)
+    
+    func sendLike(currentUserId: String, likedUserId: String, isSubscriptionActive: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+        Task {
             do {
-                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+                try await sendLike(currentUserId: currentUserId, likedUserId: likedUserId, isSubscriptionActive: isSubscriptionActive)
+                await MainActor.run {
+                    completion(.success("Success"))
+                }
             } catch {
-                print("Error serializing JSON: \(error)")
-                return
+                await MainActor.run {
+                    completion(.failure(error))
+                }
             }
-            
-            // Send the request
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
-                    }
-                    return
+        }
+    }
+    
+    func unmatchUser(currentUserId: String, unmatchedUserId: String, completion: @escaping (Result<String, Error>) -> Void) {
+        Task {
+            do {
+                try await unmatchUser(currentUserId: currentUserId, unmatchedUserId: unmatchedUserId)
+                await MainActor.run {
+                    completion(.success("Success"))
                 }
-                
-                guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                    DispatchQueue.main.async {
-                        completion(.failure(NSError(domain: "Invalid response", code: 0, userInfo: nil)))
-                    }
-                    return
+            } catch {
+                await MainActor.run {
+                    completion(.failure(error))
                 }
-                
-                // Parse the response
-                if let resultString = String(data: data, encoding: .utf8) {
-                    DispatchQueue.main.async {
-                        completion(.success(resultString))
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        completion(.failure(NSError(domain: "Data parsing error", code: 0, userInfo: nil)))
-                    }
-                }
-            }.resume()
+            }
+        }
+    }
+}
+
+
+
+// Custom errors for better error handling
+enum MatchMakingError: LocalizedError {
+    case subscriptionRequired
+    case networkError(String)
+    case invalidResponse
+    case rateLimited
+    
+    var errorDescription: String? {
+        switch self {
+        case .subscriptionRequired:
+            return "Subscription required to continue liking users"
+        case .networkError(let message):
+            return "Network error: \(message)"
+        case .invalidResponse:
+            return "Invalid response from server"
+        case .rateLimited:
+            return "Too many requests. Please wait a moment."
         }
     }
 }

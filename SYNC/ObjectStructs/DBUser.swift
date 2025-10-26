@@ -8,7 +8,9 @@ import UIKit
 
 
 
-struct DBUser: Codable {
+struct DBUser: Codable, Equatable {
+    var onboardingStep: OnboardingStep?
+    
     var fcmToken: String?
     
     // Key info
@@ -31,8 +33,8 @@ struct DBUser: Codable {
     var bio: String?
     
     // Fitness Profile
-    var fitnessTypes: [FitnessType]?
-    var fitnessGoals: [FitnessGoal]?
+    var fitnessTypes: [String]?
+    var fitnessGoals: [String]?
     var fitnessLevel: String?
     var height: Int?
     var weight: Double?
@@ -44,9 +46,10 @@ struct DBUser: Codable {
     var filteredAgeRange: CustomRange?
     var filteredSex: String?
     var filteredMatchRadius: Double?
-    var filteredFitnessTypes: [FitnessType]?
-    var filteredFitnessGoals: [FitnessGoal]?
+    var filteredFitnessTypes: [String]?
+    var filteredFitnessGoals: [String]?
     var filteredFitnessLevel: String?
+    var blockedSex: String?
     
     // extra admin stuff
     var isBanned: Bool?
@@ -60,18 +63,19 @@ struct DBUser: Codable {
         sex: String?,
         location: DBLocation?,
         bio: String?,
-        fitnessTypes: [FitnessType]?,
-        fitnessGoals: [FitnessGoal]?,
+        fitnessTypes: [String]?,
+        fitnessGoals: [String]?,
         fitnessLevel: String?,
         height: Int?,
         weight: Double?,
-        /*imageUrls: [String]?*/images: [DBImage]?,
+        images: [DBImage]?,
         filteredAgeRange: CustomRange?,
         filteredSex: String?,
         filteredMatchRadius: Double?,
-        filteredFitnessTypes: [FitnessType]?,
-        filteredFitnessGoals: [FitnessGoal]?,
+        filteredFitnessTypes: [String]?,
+        filteredFitnessGoals: [String]?,
         filteredFitnessLevel: String?,
+        blockedSex: String?,
         isBanned: Bool?,
         dailyLikes: Int?,
         lastLikeReset: Date?
@@ -97,12 +101,14 @@ struct DBUser: Codable {
         self.filteredFitnessTypes = filteredFitnessTypes
         self.filteredFitnessGoals = filteredFitnessGoals
         self.filteredFitnessLevel = filteredFitnessLevel
+        self.blockedSex = blockedSex
         self.isBanned = isBanned
         self.dailyLikes = dailyLikes
         self.lastLikeReset = lastLikeReset
     }
     
     init(
+        onboardingStep: OnboardingStep,
         deviceToken: String? = nil,
         uid: String,
         phoneNumber: String? = nil,
@@ -112,8 +118,8 @@ struct DBUser: Codable {
         sex: String? = nil,
         location: DBLocation? = nil,
         bio: String? = nil,
-        fitnessTypes: [FitnessType]? = nil,
-        fitnessGoals: [FitnessGoal]? = nil,
+        fitnessTypes: [String]? = nil,
+        fitnessGoals: [String]? = nil,
         fitnessLevel: String? = nil,
         height: Int? = nil,
         weight: Double? = nil,
@@ -121,14 +127,16 @@ struct DBUser: Codable {
         filteredAgeRange: CustomRange? = nil,
         filteredSex: String? = nil,
         filteredMatchRadius: Double? = nil,
-        filteredFitnessTypes: [FitnessType]? = nil,
-        filteredFitnessGoals: [FitnessGoal]? = nil,
+        filteredFitnessTypes: [String]? = nil,
+        filteredFitnessGoals: [String]? = nil,
         filteredFitnessLevel: String? = nil,
+        blockedSex: String? = nil,
         isBanned: Bool? = nil,
         dailyLikes: Int? = nil,
         lastLikeReset: Date? = nil
         
     ) {
+        self.onboardingStep = onboardingStep
         self.fcmToken = deviceToken
         self.uid = uid
         self.phoneNumber = phoneNumber
@@ -150,6 +158,7 @@ struct DBUser: Codable {
         self.filteredFitnessTypes = filteredFitnessTypes
         self.filteredFitnessGoals = filteredFitnessGoals
         self.filteredFitnessLevel = filteredFitnessLevel
+        self.blockedSex = blockedSex
         self.isBanned = isBanned
         self.dailyLikes = dailyLikes
         self.lastLikeReset = lastLikeReset
@@ -157,11 +166,13 @@ struct DBUser: Codable {
     
     enum CodingKeys: String, CodingKey {
         case deviceToken = "fcmToken"
-        case uid, phoneNumber, email, name, dateOfBirth, sex, location, bio, fitnessTypes, fitnessGoals, fitnessLevel, height, weight, images, filteredAgeRange, filteredSex, filteredMatchRadius, filteredFitnessTypes, filteredFitnessGoals, filteredFitnessLevel, isBanned, dailyLikes, lastLikeReset
+        case onboardingStep, uid, phoneNumber, email, name, dateOfBirth, sex, location, bio, fitnessTypes, fitnessGoals, fitnessLevel, height, weight, images, filteredAgeRange, filteredSex, filteredMatchRadius, filteredFitnessTypes, filteredFitnessGoals, filteredFitnessLevel, blockedSex, isBanned, dailyLikes, lastLikeReset
     }
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.onboardingStep = try container.decode(OnboardingStep.self, forKey: .onboardingStep)
+        self.onboardingStep = try container.decodeIfPresent(OnboardingStep.self, forKey: .onboardingStep)
         self.fcmToken = try container.decodeIfPresent(String.self, forKey: .deviceToken)
         self.uid = try container.decode(String.self, forKey: .uid)
         self.phoneNumber = try container.decode(String.self, forKey: .phoneNumber)
@@ -171,8 +182,8 @@ struct DBUser: Codable {
         self.sex = try container.decodeIfPresent(String.self, forKey: .sex)
         self.location = try container.decodeIfPresent(DBLocation.self, forKey: .location)
         self.bio = try container.decodeIfPresent(String.self, forKey: .bio)
-        self.fitnessTypes = try container.decodeIfPresent([FitnessType].self, forKey: .fitnessTypes)
-        self.fitnessGoals = try container.decodeIfPresent([FitnessGoal].self, forKey: .fitnessGoals)
+        self.fitnessTypes = try container.decodeIfPresent([String].self, forKey: .fitnessTypes)
+        self.fitnessGoals = try container.decodeIfPresent([String].self, forKey: .fitnessGoals)
         self.fitnessLevel = try container.decodeIfPresent(String.self, forKey: .fitnessLevel)
         self.height = try container.decodeIfPresent(Int.self, forKey: .height)
         self.weight = try container.decodeIfPresent(Double.self, forKey: .weight)
@@ -180,9 +191,10 @@ struct DBUser: Codable {
         self.filteredAgeRange = try container.decodeIfPresent(CustomRange.self, forKey: .filteredAgeRange)
         self.filteredSex = try container.decodeIfPresent(String.self, forKey: .filteredSex)
         self.filteredMatchRadius = try container.decodeIfPresent(Double.self, forKey: .filteredMatchRadius)
-        self.filteredFitnessTypes = try container.decodeIfPresent([FitnessType].self, forKey: .filteredFitnessTypes)
-        self.filteredFitnessGoals = try container.decodeIfPresent([FitnessGoal].self, forKey: .filteredFitnessGoals)
+        self.filteredFitnessTypes = try container.decodeIfPresent([String].self, forKey: .filteredFitnessTypes)
+        self.filteredFitnessGoals = try container.decodeIfPresent([String].self, forKey: .filteredFitnessGoals)
         self.filteredFitnessLevel = try container.decodeIfPresent(String.self, forKey: .filteredFitnessLevel)
+        self.blockedSex = try container.decodeIfPresent(String.self, forKey: .blockedSex)
         self.isBanned = try container.decodeIfPresent(Bool.self, forKey: .isBanned)
         self.dailyLikes = try container.decodeIfPresent(Int.self, forKey: .dailyLikes)
         self.lastLikeReset = try container.decodeIfPresent(Date.self, forKey: .lastLikeReset)
@@ -190,6 +202,7 @@ struct DBUser: Codable {
     
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(self.onboardingStep, forKey: .onboardingStep)
         try container.encodeIfPresent(self.fcmToken, forKey: .deviceToken)
         try container.encode(self.uid, forKey: .uid)
         try container.encodeIfPresent(self.phoneNumber, forKey: .phoneNumber)
@@ -211,20 +224,43 @@ struct DBUser: Codable {
         try container.encodeIfPresent(self.filteredFitnessTypes, forKey: .filteredFitnessTypes)
         try container.encodeIfPresent(self.filteredFitnessGoals, forKey: .filteredFitnessGoals)
         try container.encodeIfPresent(self.filteredFitnessLevel, forKey: .filteredFitnessLevel)
+        try container.encodeIfPresent(self.blockedSex, forKey: .blockedSex)
         try container.encodeIfPresent(self.isBanned, forKey: .isBanned)
         try container.encodeIfPresent(self.dailyLikes, forKey: .dailyLikes)
         try container.encodeIfPresent(self.lastLikeReset, forKey: .lastLikeReset)
     }
-}
-
-
-struct CustomRange: Codable {
-    var min: Int
-    var max: Int
-}
-
-extension CustomRange {
-    func toDictionary() -> [String: Int] {
-        return ["min": self.min, "max": self.max]
+    
+    
+    static func == (lhs: DBUser, rhs: DBUser) -> Bool {
+        return lhs.uid == rhs.uid
     }
+}
+
+
+// Create: OnboardingSteps.swift
+enum OnboardingStep: String, CaseIterable, Codable {
+    case phone = "phone"
+    case email = "email"
+    case welcomeConnector = "welcomeConnector"
+    case name = "name"
+    case age = "age"
+    case sex = "sex"
+    case location = "location"
+    case bio = "bio"
+    case images = "images"
+    case fitnessProfileConnector = "fitnessProfileConnector"
+    case fitnessLevel = "fitnessLevel"
+    case fitnessTypes = "fitnessTypes"
+    case fitnessGoals = "fitnessGoals"
+    case height = "height"
+    case weight = "weight"
+    case filterConnectorView = "filterConnectorView"
+    case filteredAgeRange = "filteredAgeRange"
+    case filteredSex = "filteredSex"
+    case matchRadius = "matchRadius"
+    case filteredFitnessTypes = "filteredFitnessTypes"
+    case filteredFitnessGoals = "filteredFitnessGoals"
+    case filteredFitnessLevel = "filteredFitnessLevel"
+    case blockedSex = "blockedSex"
+    case complete = "complete"
 }
