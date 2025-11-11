@@ -19,7 +19,7 @@ struct PhoneAuthenticationView: View {
     
     @State private var verificationDigits: [String] = Array(repeating: "", count: 6)
     
-    @State private var selectedCountry = Country(code: "+44", name: "United Kingdom", flag: "🇬🇧")
+    @State private var selectedCountry = Country(code: "+61", name: "Australia", flag: "🇦🇺")
     
     @State var countries: [Country] = [
         Country(code: "+93", name: "Afghanistan", flag: "🇦🇫"),
@@ -128,20 +128,6 @@ struct PhoneAuthenticationView: View {
                 Spacer()
                 if showVerifyButton {
                     HStack(spacing: 15) {
-//                        OnBoardingButton(text: "Verify Code") {
-//                            phoneAuthViewModel.verifyCode { success in
-//                                if success {
-//                                    signUpModel.phoneNumber = phoneAuthViewModel.txtMobile
-//                                    withAnimation {
-////                                      showEmailLayer = true
-//                                        signUpModel.onboardingStep = .email
-//                                        Task {
-//                                            await signUpModel.updateUserProgress(uid: <#String#>, onboardingStep: signUpModel.onboardingStep, dbKey: "phoneNumber", dbValue: phoneAuthViewModel.mobileZoneCode + phoneAuthViewModel.txtMobile)
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
                         OnBoardingButton(text: "Verify Code") {
                             phoneAuthViewModel.verifyCode { success in
                                 if success {

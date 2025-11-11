@@ -7,6 +7,8 @@ struct ChatRoomsView: View {
     @EnvironmentObject var subscriptionModel: SubscriptionModel
     
     @State private var showPaywallView = false
+    @State private var showCreateGroupChat = false
+
 
     var body: some View {
         VStack {
@@ -42,6 +44,11 @@ struct ChatRoomsView: View {
         .sheet(isPresented: $showPaywallView, content: {
             PayWallView(isPaywallPresented: $showPaywallView)
         })
+        .sheet(isPresented: $showCreateGroupChat, content: {
+            NavigationStack {
+                CreateGroupChatView(currentUserId: profileModel.user?.uid ?? "")
+            }
+        })
         .padding(.horizontal, 10)
         .background(
             Color.white
@@ -55,10 +62,16 @@ struct ChatRoomsView: View {
                 .bold()
             
             Spacer()
+            
+            Button {
+                print("Create new chatroom")
+                showCreateGroupChat = true
+            } label: {
+                Image(systemName: "plus.circle.fill")
+            }
+
         }
         .h1Style()
         .foregroundStyle(.syncBlack)
     }
 }
-
-

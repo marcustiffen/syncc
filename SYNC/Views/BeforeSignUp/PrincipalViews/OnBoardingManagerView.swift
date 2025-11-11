@@ -6,6 +6,7 @@ struct OnBoardingManagerView: View {
     @StateObject var onboardingStateManager = OnboardingStateManager()
     
     @EnvironmentObject var signUpModel: SignUpModel
+    @EnvironmentObject var profileModel: ProfileModel
     
     @Binding var showCreateOrSignInView: Bool
     @Binding var isLoading: Bool
@@ -62,6 +63,7 @@ struct OnBoardingManagerView: View {
             BlockedSexView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
         case .complete:
             CompleteSignUpView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
+                .environmentObject(profileModel)
         }
     }
 }

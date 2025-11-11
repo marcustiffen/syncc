@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "sync-69d00"
-  }
+    "default": "sync-69d00",
+    "staging": "syncc-staging"
+  },
+  "targets": {},
+  "etags": {}
 }

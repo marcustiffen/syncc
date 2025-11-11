@@ -6,7 +6,7 @@ import FirebaseAuth
 class PhoneAuthenticationViewModel: ObservableObject {
     static var shared = PhoneAuthenticationViewModel()
     
-    @Published var mobileZoneCode = "+44"
+    @Published var mobileZoneCode = "+61"
     @Published var txtMobile = ""
     @Published var txtCode: String = ""
     @Published var verificationID: String = ""

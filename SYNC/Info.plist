@@ -16,6 +16,14 @@
 				<string>app-1-764598027802-ios-0384be62b1f7f6067ef3a3</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app-1-352368810109-ios-a720d98e1286750add3914</string>
+			</array>
+		</dict>
 	</array>
 	<key>FirebaseMessagingAutoInitEnabled</key>
 	<true/>

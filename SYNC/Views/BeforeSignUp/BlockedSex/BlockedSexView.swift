@@ -41,7 +41,7 @@ struct BlockedSexView: View {
             
             VStack(alignment: .leading, spacing: 10) {
                 Image(systemName: "person.2")
-                Text("Choose the sex(es) do you want to sync up with")
+                Text("Choose the sex(es) do you NOT want to sync up with")
             }
             .titleModifiers()
             

@@ -283,3 +283,263 @@ class ActivityManager: ObservableObject {
 }
 
 
+extension ActivityManager {
+    func fetchMyActivities(userId: String, limit: Int = 10) async throws -> [Activity] {
+        
+        // Reset pagination state
+        lastDocument = nil
+        hasMoreActivities = true
+        
+        let query = activitiesCollection()
+            .whereField("creatorId", isEqualTo: userId)
+            .order(by: "createdAt", descending: true)
+            .limit(to: limit)
+        
+        let snapshot = try await query.getDocuments()
+        
+        let activities = try snapshot.documents.compactMap { document -> Activity? in
+            try document.data(as: Activity.self)
+        }
+        
+        // Store the last document for pagination
+        if let last = snapshot.documents.last {
+            lastDocument = last
+        }
+        
+        // Update hasMoreActivities flag
+        hasMoreActivities = activities.count >= limit
+        
+        return activities
+    }
+
+    
+    func loadMoreMyActivities(userId: String, limit: Int = 10) async throws -> [Activity] {
+        
+        // Prevent multiple simultaneous loads
+        guard !isLoadingMore else {
+            print("Already loading more activities")
+            return []
+        }
+        
+        // Check if there are more activities to load
+        guard hasMoreActivities else {
+            print("No more activities to load")
+            return []
+        }
+        
+        // Need a starting point for pagination
+        guard let lastDoc = lastDocument else {
+            print("No last document - use fetchMyActivities first")
+            return []
+        }
+        
+        isLoadingMore = true
+        defer { isLoadingMore = false }
+        
+        let query = activitiesCollection()
+            .whereField("creatorId", isEqualTo: userId)
+            .order(by: "createdAt", descending: true)
+            .start(afterDocument: lastDoc)
+            .limit(to: limit)
+        
+        let snapshot = try await query.getDocuments()
+        
+        let activities = try snapshot.documents.compactMap { document -> Activity? in
+            try document.data(as: Activity.self)
+        }
+        
+        // Update last document
+        if let last = snapshot.documents.last {
+            lastDocument = last
+        }
+        
+        // Update flag
+        hasMoreActivities = !activities.isEmpty && activities.count >= limit
+        
+        return activities
+    }
+
+    
+    func listenForMyNewActivities(userId: String, onNewActivities: @escaping ([Activity]) -> Void) {
+        
+        // Remove existing listener
+        stopListeningForActivities()
+        
+        // Listen for activities created in the last minute (to avoid loading all historical data)
+        let recentTime = Date().addingTimeInterval(-60) // Last 60 seconds
+        
+        activitiesListener = activitiesCollection()
+            .whereField("creatorId", isEqualTo: userId)
+            .whereField("createdAt", isGreaterThan: Timestamp(date: recentTime))
+            .order(by: "createdAt", descending: true)
+            .addSnapshotListener { [weak self] snapshot, error in
+                
+                guard let self = self else { return }
+                
+                if let error = error {
+                    print("Error listening for my activities: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let snapshot = snapshot else { return }
+                
+                // Only process new documents (not initial load or modifications)
+                let newActivities = snapshot.documentChanges
+                    .filter { $0.type == .added }
+                    .compactMap { change -> Activity? in
+                        try? change.document.data(as: Activity.self)
+                    }
+                
+                if !newActivities.isEmpty {
+                    onNewActivities(newActivities)
+                }
+            }
+    }
+}
+
+
+
+
+extension ActivityManager {
+    
+    // MARK: - Fetch Initial Activities with Filters
+    
+    /// Fetches the initial batch of activities with optional date range filtering
+    /// - Parameters:
+    ///   - currentUserId: The current user's ID
+    ///   - matchedUserIds: Array of user IDs that the current user has matched with
+    ///   - dateRange: Optional date range filter to apply server-side
+    ///   - limit: Number of activities to fetch (default: 20)
+    /// - Returns: Array of activities sorted by startTime ascending
+    func fetchInitialActivities(
+        currentUserId: String,
+        matchedUserIds: [String],
+        dateRange: DateRangeFilter = .all,
+        limit: Int = 20
+    ) async throws -> [Activity] {
+        
+        // Reset pagination state
+        lastDocument = nil
+        hasMoreActivities = true
+        
+        guard !matchedUserIds.isEmpty else {
+            print("No matches found - returning empty array")
+            return []
+        }
+        
+        // Build query with date filter
+        var query: Query = activitiesCollection()
+        
+        // Apply date range filter if specified
+        if let range = dateRange.dateRange {
+            query = query
+                .whereField("startTime", isGreaterThanOrEqualTo: Timestamp(date: range.start))
+                .whereField("startTime", isLessThan: Timestamp(date: range.end))
+                .order(by: "startTime", descending: false) // Order by startTime when filtering
+        } else {
+            query = query.order(by: "createdAt", descending: true)
+        }
+        
+        query = query.limit(to: limit)
+        
+        let snapshot = try await query.getDocuments()
+        
+        let activities = try snapshot.documents.compactMap { document -> Activity? in
+            let activity = try document.data(as: Activity.self)
+            // Only include if creator is in matched users
+            return matchedUserIds.contains(activity.creatorId) ? activity : nil
+        }
+        
+        // Store the last document for pagination
+        if let last = snapshot.documents.last {
+            lastDocument = last
+        }
+        
+        // Update hasMoreActivities flag
+        hasMoreActivities = activities.count >= limit
+        
+        print("📥 Fetched \(activities.count) activities with date filter: \(dateRange.displayName)")
+        
+        return activities
+    }
+    
+    // MARK: - Load More Activities with Filters
+    
+    /// Loads the next batch of activities with the same filters
+    /// - Parameters:
+    ///   - currentUserId: The current user's ID
+    ///   - matchedUserIds: Array of user IDs that the current user has matched with
+    ///   - dateRange: Date range filter to apply server-side
+    ///   - limit: Number of activities to fetch (default: 20)
+    /// - Returns: Array of additional activities
+    func loadMoreActivities(
+        currentUserId: String,
+        matchedUserIds: [String],
+        dateRange: DateRangeFilter = .all,
+        limit: Int = 20
+    ) async throws -> [Activity] {
+        
+        // Prevent multiple simultaneous loads
+        guard !isLoadingMore else {
+            print("Already loading more activities")
+            return []
+        }
+        
+        // Check if there are more activities to load
+        guard hasMoreActivities else {
+            print("No more activities to load")
+            return []
+        }
+        
+        // Need a starting point for pagination
+        guard let lastDoc = lastDocument else {
+            print("No last document - use fetchInitialActivities first")
+            return []
+        }
+        
+        guard !matchedUserIds.isEmpty else {
+            print("No matches found")
+            return []
+        }
+        
+        isLoadingMore = true
+        defer { isLoadingMore = false }
+        
+        // Build query with same filters
+        var query: Query = activitiesCollection()
+        
+        // Apply date range filter if specified
+        if let range = dateRange.dateRange {
+            query = query
+                .whereField("startTime", isGreaterThanOrEqualTo: Timestamp(date: range.start))
+                .whereField("startTime", isLessThan: Timestamp(date: range.end))
+                .order(by: "startTime", descending: false)
+        } else {
+            query = query.order(by: "createdAt", descending: true)
+        }
+        
+        query = query
+            .start(afterDocument: lastDoc)
+            .limit(to: limit)
+        
+        let snapshot = try await query.getDocuments()
+        
+        let activities = try snapshot.documents.compactMap { document -> Activity? in
+            let activity = try document.data(as: Activity.self)
+            // Only include if creator is in matched users
+            return matchedUserIds.contains(activity.creatorId) ? activity : nil
+        }
+        
+        // Update last document
+        if let last = snapshot.documents.last {
+            lastDocument = last
+        }
+        
+        // Update flag
+        hasMoreActivities = !activities.isEmpty && activities.count >= limit
+        
+        print("📥 Loaded \(activities.count) more activities")
+        
+        return activities
+    }
+}

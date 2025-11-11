@@ -77,25 +77,16 @@ struct ProfileView: View {
     }
     
     private var userDetailsSection: some View {
-        HStack(spacing: 10) {
-            Text(profileModel.user?.name ?? "User Name")
-                .foregroundStyle(.syncBlack)
-                .h2Style()
-            
-            if subscriptionModel.isSubscriptionActive {
-                Image(systemName: "star.fill")
-                    .font(.h2)
-                    .foregroundStyle(.yellow)
-            }
-        }
-        .padding(.bottom, 30)
-
+        Text(profileModel.user?.name ?? "User Name")
+            .foregroundStyle(.syncBlack)
+            .h2Style()
     }
     
     private var profileListNavigation: some View {
         VStack {
             NavigationLink {
                 MyActivityView()
+                    .environmentObject(profileModel)
             } label: {
                 HStack {
                     Image(systemName: "figure.run")

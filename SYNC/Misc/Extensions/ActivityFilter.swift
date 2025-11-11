@@ -1,3 +1,6 @@
+import Foundation
+
+
 struct ActivityFilter: Equatable {
     var radiusKm: Double? = nil // nil means no radius filter
     var dateRange: DateRangeFilter = .all

@@ -1,9 +1,4 @@
-//
-//  DateRangeFilter.swift
-//  SYNC
-//
-//  Created by Marcus Tiffen (CODING) on 01/11/2025.
-//
+import Foundation
 
 
 enum DateRangeFilter: Equatable, CaseIterable {

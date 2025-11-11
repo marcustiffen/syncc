@@ -7,7 +7,7 @@ struct ChatView: View {
     @EnvironmentObject private var profileModel: ProfileModel
     @EnvironmentObject private var messagesManager: MessagesManager
     @StateObject private var matchMakingManager = MatchMakingManager()
-    @State private var showPayWallView = false
+//    @State private var showPayWallView = false
     
     @Environment(\.dismiss) var dismiss
     
@@ -91,7 +91,7 @@ struct ChatView: View {
             
             MessageFieldView(
                 messages: $messagesManager.messages,
-                showPayWallView: $showPayWallView,
+//                showPayWallView: $showPayWallView,
                 chatRoomId: chatRoomId,
                 messageReceiver: messageReceiver,
                 messagesManager: messagesManager // Pass the messages manager
@@ -99,9 +99,9 @@ struct ChatView: View {
             .environmentObject(profileModel)
             .frame(maxWidth: .infinity)
         }
-        .sheet(isPresented: $showPayWallView, content: {
-            PayWallView(isPaywallPresented: $showPayWallView)
-        })
+//        .sheet(isPresented: $showPayWallView, content: {
+//            PayWallView(isPaywallPresented: $showPayWallView)
+//        })
         .alert(isPresented: $showDeleteConfirmation) {
             Alert(
                 title: Text("Wait!"),

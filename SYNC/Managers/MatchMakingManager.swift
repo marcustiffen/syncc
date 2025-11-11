@@ -45,9 +45,16 @@ class MatchMakingManager: ObservableObject {
     
     private func sendUnlimitedLike(currentUserId: String, likedUserId: String) async throws {
         print("Unlimited like sent")
+        
+        #if STAGING
+        guard let url = URL(string: "https://us-central1-syncc-staging.cloudfunctions.net/sendLike") else {
+            throw MatchMakingError.networkError("Invalid URL")
+        }
+        #else
         guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/sendLike") else {
             throw MatchMakingError.networkError("Invalid URL")
         }
+        #endif
         
         let parameters: [String: Any] = [
             "currentUserId": currentUserId,
@@ -59,9 +66,15 @@ class MatchMakingManager: ObservableObject {
     
     private func sendFreeLike(currentUserId: String, likedUserId: String) async throws {
         print("Free like sent")
+        #if STAGING
+        guard let url = URL(string: "https://us-central1-syncc-staging.cloudfunctions.net/sendLikeFree") else {
+            throw MatchMakingError.networkError("Invalid URL")
+        }
+        #else
         guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/sendLikeFree") else {
             throw MatchMakingError.networkError("Invalid URL")
         }
+        #endif
         
         let parameters: [String: Any] = [
             "currentUserId": currentUserId,
@@ -142,9 +155,15 @@ class MatchMakingManager: ObservableObject {
     }
     
     func unmatchUser(currentUserId: String, unmatchedUserId: String) async throws {
+        #if STAGING
+        guard let url = URL(string: "https://us-central1-syncc-staging.cloudfunctions.net/unmatchUser") else {
+            throw MatchMakingError.networkError("Invalid URL")
+        }
+        #else
         guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/unmatchUser") else {
             throw MatchMakingError.networkError("Invalid URL")
         }
+        #endif
         
         let parameters: [String: Any] = [
             "currentUserId": currentUserId,

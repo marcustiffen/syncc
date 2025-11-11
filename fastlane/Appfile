@@ -1,0 +1,8 @@
+app_identifier("com.marcustiffen.SYNC") # The bundle identifier of your app
+apple_id("marcustiffen6@gmail.com") # Your Apple Developer Portal username
+
+itc_team_id("127012323") # App Store Connect Team ID
+team_id("3GVGPA52LY") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

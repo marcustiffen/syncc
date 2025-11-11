@@ -8,10 +8,6 @@ struct TabbarView: View {
     @State private var selectedTab = 0
     @Binding var loadingViewFinishedLoading: Bool
     
-    // Add this to track known matches
-    @State private var knownMatchIds = Set<String>()
-    @State private var hasInitialized = false
-    @State private var isAppActive = true
     
     @EnvironmentObject var profileModel: ProfileModel
     @EnvironmentObject var signUpModel: SignUpModel
@@ -19,90 +15,6 @@ struct TabbarView: View {
     @EnvironmentObject var subscriptionModel: SubscriptionModel
     
     
-//    var body: some View {
-//        NavigationStack {
-//            VStack(spacing: 0) {
-//                // Content Area
-//                switch selectedTab {
-//                case 0:
-//                    ActivityView()
-//                        .environmentObject(profileModel)
-//                        .environmentObject(chatRoomsManager)
-//                        .environmentObject(subscriptionModel)
-//                    
-//                case 1:
-//                    ConnectionsView(loadingViewFinishedLoading: $loadingViewFinishedLoading, showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading)
-//                        .environmentObject(profileModel)
-//                        .environmentObject(chatRoomsManager)
-//                        .environmentObject(subscriptionModel)
-//                    
-//                case 2:
-//                    ChatRoomsView()
-//                        .environmentObject(profileModel)
-//                        .environmentObject(chatRoomsManager)
-//                        .environmentObject(subscriptionModel)
-//                    
-//                case 3:
-//                    ProfileView(showCreateOrSignInView: $showCreateOrSignInView)
-//                        .environmentObject(profileModel)
-//                        .environmentObject(chatRoomsManager)
-//                        .environmentObject(subscriptionModel)
-//                    
-//                default:
-//                    EmptyView()
-//                }
-//                
-//                Spacer()
-//                
-//
-//                HStack(spacing: 0) {
-//                    ForEach(0..<5) { index in
-//                        Button {
-//                            selectedTab = index
-//                        } label: {
-//                            ZStack(alignment: .topTrailing) {
-//                                // Use system bell for Friends tab (index 1)
-//                                if index == 1 {
-//                                    Image(systemName: "person.2" + (selectedTab == index ? ".fill" : ""))
-//                                        .foregroundStyle(.black)
-//                                        .font(.system(size: 24))
-//                                        .frame(maxWidth: .infinity)
-//                                        .padding(.vertical, 8)
-//                                } else {
-//                                    Image(getIcon(for: index) + (selectedTab == index ? "_fill" : ""))
-//                                        .font(.system(size: 24))
-//                                        .frame(maxWidth: .infinity)
-//                                        .padding(.vertical, 8)
-//                                }
-//                                
-//                                // Badge for Chat tab
-//                                if index == 3 && chatRoomsManager.totalUnreadMessages > 0 {
-//                                    ZStack {
-//                                        Circle()
-//                                            .fill(Color.syncGreen)
-//                                            .frame(width: 20, height: 20)
-//                                        
-//                                        Text("\(min(chatRoomsManager.totalUnreadMessages, 99))")
-//                                            .bodyTextStyle()
-//                                            .foregroundColor(.black)
-//                                            .minimumScaleFactor(0.8)
-//                                    }
-//                                    .offset(x: -20, y: 0)
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                .padding(.bottom, 20)
-//                .frame(height: 80)
-//                .background(Color.syncWhite)
-//            }
-//            .navigationBarBackButtonHidden(true)
-//            .ignoresSafeArea(.container)
-//        }
-//    }
-
     
     @State private var showCreateActivitySheet = false
 

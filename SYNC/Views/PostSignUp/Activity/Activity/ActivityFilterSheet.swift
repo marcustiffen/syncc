@@ -1,3 +1,7 @@
+import SwiftUI
+import CoreLocation
+
+
 struct ActivityFilterSheet: View {
     @EnvironmentObject var profileModel: ProfileModel
     
@@ -17,125 +21,152 @@ struct ActivityFilterSheet: View {
     }
     
     var body: some View {
-            Form {
+        VStack(spacing: 10) {
+            titleView()
+                .padding(.top, 25)
+            
+            Spacer()
+            if !showCustomDatePicker {
                 // Date Range Section
-                Section {
-                    ForEach(DateRangeFilter.allCases, id: \.displayName) { range in
-                        Button {
-                            selectedDateRange = range
-                        } label: {
-                            HStack {
-                                Text(range.displayName)
-                                    .foregroundColor(.primary)
-                                Spacer()
-                                if selectedDateRange == range {
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(.blue)
-                                }
-                            }
-                        }
-                    }
-                    
+                ForEach(DateRangeFilter.allCases, id: \.displayName) { range in
                     Button {
-                        showCustomDatePicker.toggle()
+                        selectedDateRange = range
                     } label: {
                         HStack {
-                            Text("Custom Range")
-                                .foregroundColor(.primary)
+                            Text(range.displayName)
+                                .font(.h2)
+                                .foregroundColor(.black)
                             Spacer()
-                            if case .custom = selectedDateRange {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(.blue)
-                            }
                         }
+                        .padding()
                     }
-                    
-                    if showCustomDatePicker {
-                        DatePicker("Start", selection: $customStartDate, displayedComponents: [.date])
-                        DatePicker("End", selection: $customEndDate, displayedComponents: [.date])
-                        
-                        Button("Apply Custom Range") {
-                            selectedDateRange = .custom(start: customStartDate, end: customEndDate)
-                            showCustomDatePicker = false
-                        }
-                        .foregroundColor(.blue)
-                    }
-                } header: {
-                    Text("Time Range")
-                } footer: {
-                    if let range = selectedDateRange.dateRange {
-                        Text("Showing activities from \(range.start.formatted(date: .abbreviated, time: .omitted)) to \(range.end.formatted(date: .abbreviated, time: .omitted))")
-                    }
-                }
-                
-                // Radius Section
-                Section {
-                    Toggle("Enable Radius Filter", isOn: Binding(
-                        get: { selectedRadius != nil },
-                        set: { newValue in
-                            if newValue {
-                                selectedRadius = 10.0 // Default to 10km when enabled
-                            } else {
-                                selectedRadius = nil
-                            }
-                        }
-                    ))
-                    
-                    if selectedRadius != nil {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("\(Int(selectedRadius ?? 10)) km")
-                                .font(.headline)
-                            
-                            Slider(
-                                value: Binding(
-                                    get: { selectedRadius ?? 10 },
-                                    set: { selectedRadius = $0 }
-                                ),
-                                in: 1...100,
-                                step: 1
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(selectedDateRange == range ? Color.syncGreen.opacity(0.1) : Color.white)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(selectedDateRange == range ? Color.syncGreen : Color.gray.opacity(0.2), lineWidth: 2)
                             )
-                        }
+                    )
+                }
+            }
+            
+            
+            Button {
+                withAnimation {
+                    showCustomDatePicker.toggle()
+                }
+            } label: {
+                HStack {
+                    Text(!showCustomDatePicker ? "Choose a custom Range" : "Cancel")
+                        .padding(.horizontal, 10)
+                        .foregroundStyle(.syncBlack)
+                        .h2Style()
+                        .padding(.vertical, 10)
+                        .background(
+                            Rectangle()
+                                .clipShape(.rect(cornerRadius: 10))
+                                .foregroundStyle(.syncGreen)
+                        )
+                    Spacer()
+                    if case .custom = selectedDateRange {
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.blue)
                     }
-                } header: {
-                    Text("Distance")
-                } footer: {
-                    if selectedRadius != nil {
-                        Text("Only show activities within \(Int(selectedRadius!)) km of your location")
+                }
+            }
+            
+            if showCustomDatePicker {
+                DatePicker("Start", selection: $customStartDate, displayedComponents: [.date])
+                DatePicker("End", selection: $customEndDate, displayedComponents: [.date])
+                
+                
+                Button {
+                    selectedDateRange = .custom(start: customStartDate, end: customEndDate)
+                    showCustomDatePicker = false
+                } label: {
+                    Text("Apply Custom Range")
+                        .padding(.horizontal, 10)
+                        .foregroundStyle(.syncBlack)
+                        .h2Style()
+                        .padding(.vertical, 10)
+                        .background(
+                            Rectangle()
+                                .clipShape(.rect(cornerRadius: 10))
+                                .foregroundStyle(.syncGreen)
+                        )
+                }
+                
+            }
+            
+            // Radius Section
+            Toggle(isOn: Binding(
+                get: { selectedRadius != nil },
+                set: { newValue in
+                    if newValue {
+                        selectedRadius = 10.0 // Default to 10km when enabled
                     } else {
-                        Text("Show activities at any distance")
-                    }
-                }
-                
-                // Clear Filters
-                Section {
-                    Button("Clear All Filters") {
-                        selectedDateRange = .all
                         selectedRadius = nil
-                        Task {
-                            await viewModel.clearFilters(currentUserId: profileModel.user?.uid ?? "")
-                        }
-                        dismiss()
                     }
-                    .foregroundColor(.red)
+                }
+            )) {
+                Text("Enable Radius Filter")
+                    .font(.h2)
+                    .foregroundStyle(.syncBlack)
+                    .h2Style()
+            }
+            .toggleStyle(.automatic)
+            .padding(.vertical, 8)
+
+
+            
+            
+            if selectedRadius != nil {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("\(Int(selectedRadius ?? 10)) km")
+                        .font(.h2)
+                        .bold()
+                    
+                    Slider(
+                        value: Binding(
+                            get: { selectedRadius ?? 10 },
+                            set: { selectedRadius = $0 }
+                        ),
+                        in: 1...100,
+                        step: 1
+                    )
                 }
             }
-            .navigationTitle("Filters")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
+            
+            
+            Spacer()
+            
+            
+            Button {
+                selectedDateRange = .all
+                selectedRadius = nil
+                Task {
+                    await viewModel.clearFilters(currentUserId: profileModel.user?.uid ?? "")
                 }
-                
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Apply") {
-                        applyFilters()
-                        dismiss()
-                    }
-                }
+                dismiss()
+            } label: {
+                Text("Clear all filters")
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.white)
+                    .h2Style()
+                    .padding(.vertical, 10)
+                    .background(
+                        Rectangle()
+                            .clipShape(.rect(cornerRadius: 10))
+                            .foregroundStyle(.red.opacity(0.7))
+                    )
             }
-        
+            
+            
+            
+            Spacer()
+        }
+        .padding(.horizontal, 10)
     }
     
     private func applyFilters() {
@@ -143,5 +174,31 @@ struct ActivityFilterSheet: View {
             viewModel.updateRadiusFilter(radiusKm: selectedRadius)
             await viewModel.updateDateRangeFilter(dateRange: selectedDateRange, currentUserId: profileModel.user?.uid ?? "")
         }
+    }
+    
+    
+    private func titleView() -> some View {
+        HStack {
+            Button {
+                dismiss()
+            } label: {
+                Text("Cancel")
+                    .font(.h2)
+            }
+            
+            Spacer()
+            Text("Filters")
+            Spacer()
+            
+            Button {
+                dismiss()
+            } label: {
+                Text("Apply")
+                    .font(.h2)
+                    .bold()
+            }
+        }
+        .h1Style()
+        .foregroundStyle(.syncBlack)
     }
 }

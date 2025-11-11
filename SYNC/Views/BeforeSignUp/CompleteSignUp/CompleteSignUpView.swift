@@ -94,6 +94,7 @@ struct CompleteSignUpView: View {
         })
         .navigationDestination(isPresented: $completedLoading, destination: {
             TabbarView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
+                .environmentObject(profileModel)
         })
         .navigationBarBackButtonHidden(true)
         .onBoardingBackground()

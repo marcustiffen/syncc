@@ -1,3 +1,6 @@
+import SwiftUI
+
+
 struct ActivityFilterBar: View {
     @EnvironmentObject var profileModel: ProfileModel
     @ObservedObject var viewModel: ActivityViewModel

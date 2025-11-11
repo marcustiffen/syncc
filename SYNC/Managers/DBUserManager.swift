@@ -42,10 +42,18 @@ class DBUserManager: ObservableObject {
     
     func deleteUser(uid: String, completion: @escaping (Result<String, Error>) -> Void) {
         do {
+            #if STAGING
+            guard let url = URL(string: "https://us-central1-syncc-staging.cloudfunctions.net/deleteUser") else {
+                completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+                return
+            }
+            #else
             guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/deleteUser") else {
                 completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
                 return
             }
+            #endif
+
             
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
@@ -169,7 +177,11 @@ class DBUserManager: ObservableObject {
 extension DBUserManager {
     
     func uploadPhoto(selectedImages: [UIImage], uid: String) async -> [String] {
+        #if STAGING
+        let storageRef = Storage.storage(url: "gs://syncc-staging.firebasestorage.app").reference()
+        #else
         let storageRef = Storage.storage(url: "gs://sync-69d00.firebasestorage.app").reference()
+        #endif
         
         // Use a task group to upload images concurrently
         return await withTaskGroup(of: (Int, String?).self) { group in
@@ -253,8 +265,12 @@ extension DBUserManager {
     
     func deletePhoto(url: String) async throws {
         // Create a reference to the Firebase Storage
-        let storageRef = Storage.storage(url: "gs://sync-69d00.firebasestorage.app").reference()
+        #if STAGING
+        let storageRef = Storage.storage(url: "gs://syncc-staging.firebasestorage.app").reference()
         
+        #else
+        let storageRef = Storage.storage(url: "gs://sync-69d00.firebasestorage.app").reference()
+        #endif
         // Extract the image path from the download URL
         guard let urlComponents = URLComponents(string: url),
               let imagePath = urlComponents.path.components(separatedBy: "/images/").last else {

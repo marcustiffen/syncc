@@ -347,7 +347,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		EACA72C52CC90A67009E2C9B /* Debug */ = {
+		EACA72C52CC90A67009E2C9B /* Staging */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -405,10 +405,10 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "STAGING $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
-			name = Debug;
+			name = Staging;
 		};
 		EACA72C62CC90A67009E2C9B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -461,12 +461,13 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = RELEASE;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		EACA72C82CC90A67009E2C9B /* Debug */ = {
+		EACA72C82CC90A67009E2C9B /* Staging */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -504,7 +505,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
-			name = Debug;
+			name = Staging;
 		};
 		EACA72C92CC90A67009E2C9B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -545,7 +546,7 @@
 			};
 			name = Release;
 		};
-		EACA72CB2CC90A67009E2C9B /* Debug */ = {
+		EACA72CB2CC90A67009E2C9B /* Staging */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -562,7 +563,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SYNC.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SYNC";
 			};
-			name = Debug;
+			name = Staging;
 		};
 		EACA72CC2CC90A67009E2C9B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -583,7 +584,7 @@
 			};
 			name = Release;
 		};
-		EACA72CE2CC90A67009E2C9B /* Debug */ = {
+		EACA72CE2CC90A67009E2C9B /* Staging */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -598,7 +599,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = SYNC;
 			};
-			name = Debug;
+			name = Staging;
 		};
 		EACA72CF2CC90A67009E2C9B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -623,7 +624,7 @@
 		EACA729E2CC90A64009E2C9B /* Build configuration list for PBXProject "SYNC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EACA72C52CC90A67009E2C9B /* Debug */,
+				EACA72C52CC90A67009E2C9B /* Staging */,
 				EACA72C62CC90A67009E2C9B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -632,7 +633,7 @@
 		EACA72C72CC90A67009E2C9B /* Build configuration list for PBXNativeTarget "SYNC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EACA72C82CC90A67009E2C9B /* Debug */,
+				EACA72C82CC90A67009E2C9B /* Staging */,
 				EACA72C92CC90A67009E2C9B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -641,7 +642,7 @@
 		EACA72CA2CC90A67009E2C9B /* Build configuration list for PBXNativeTarget "SYNCTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EACA72CB2CC90A67009E2C9B /* Debug */,
+				EACA72CB2CC90A67009E2C9B /* Staging */,
 				EACA72CC2CC90A67009E2C9B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -650,7 +651,7 @@
 		EACA72CD2CC90A67009E2C9B /* Build configuration list for PBXNativeTarget "SYNCUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EACA72CE2CC90A67009E2C9B /* Debug */,
+				EACA72CE2CC90A67009E2C9B /* Staging */,
 				EACA72CF2CC90A67009E2C9B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

@@ -5,7 +5,7 @@ import SwiftUI
 
 struct MessageFieldView: View {
     @Binding var messages: [Message]
-    @Binding var showPayWallView: Bool
+//    @Binding var showPayWallView: Bool
     let chatRoomId: String
     let messageReceiver: DBUser
     let messagesManager: MessagesManager // Accept the specific MessagesManager instance
@@ -32,15 +32,15 @@ struct MessageFieldView: View {
             
             if !messageText.isEmpty {
                 Button {
-                    let user = profileModel.user!
-                    let sendersMessages = messages.filter{ $0.senderId == user.uid }
-                    let sendersMessagesCount = sendersMessages.count
+//                    let user = profileModel.user!
+//                    let sendersMessages = messages.filter{ $0.senderId == user.uid }
+//                    let sendersMessagesCount = sendersMessages.count
                     
-                    if subscriptionsModel.isSubscriptionActive == false && sendersMessagesCount > 15 {
-                        showPayWallView = true
-                    } else {
+//                    if subscriptionsModel.isSubscriptionActive == false && sendersMessagesCount > 15 {
+//                        showPayWallView = true
+//                    } else {
                         sendMessage()
-                    }
+//                    }
                 } label: {
                     Image(systemName: "paperplane.fill")
                         .foregroundColor(.white)

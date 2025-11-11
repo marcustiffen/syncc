@@ -40,6 +40,7 @@ struct SignInView: View {
         }
         .navigationDestination(isPresented: $navigateToTabBarView, destination: {
             TabbarView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
+                .environmentObject(profileModel)
         })
         .navigationBarBackButtonHidden(true)
         .padding(.horizontal, 20)

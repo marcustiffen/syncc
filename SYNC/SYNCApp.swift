@@ -10,7 +10,8 @@ import RevenueCat
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Configure Firebase
-        FirebaseApp.configure()
+//        FirebaseApp.configure()
+        configureFirebase()
         
         Purchases.logLevel = .debug
         Purchases.configure(withAPIKey: "appl_VWiXuiOGUplEsjKASiNMggahmUi")
@@ -102,6 +103,22 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             print("Received notification: \(userInfo)")
             completionHandler(.noData)
         }
+    }
+    
+    private func configureFirebase() {
+        #if STAGING
+        print("⚙️ Using STAGING Firebase config")
+        if let filePath = Bundle.main.path(forResource: "GoogleService-Info-Staging", ofType: "plist"),
+           let options = FirebaseOptions(contentsOfFile: filePath) {
+            FirebaseApp.configure(options: options)
+        }
+        #else
+        print("⚙️ Using PRODUCTION Firebase config")
+        if let filePath = Bundle.main.path(forResource: "GoogleService-Info-Prod", ofType: "plist"),
+           let options = FirebaseOptions(contentsOfFile: filePath) {
+            FirebaseApp.configure(options: options)
+        }
+        #endif
     }
 }
 

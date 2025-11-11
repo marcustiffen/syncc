@@ -46,14 +46,6 @@ struct AccountView: View {
                 title: Text("Delete Account"),
                 message: Text("Are you sure you want to permanently delete your account?"),
                 primaryButton: .destructive(Text("Delete")) {
-//                    Task {
-//                        do {
-//                            try await profileModel.deleteUser()
-//                            navigateToCreateOrSignInView = true
-//                        } catch {
-//                            showDeleteConfirmation = false
-//                        }
-//                    }
                     navigateToConfirmDeletionView = true
                 },
                 secondaryButton: .cancel()

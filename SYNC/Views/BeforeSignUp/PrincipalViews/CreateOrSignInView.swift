@@ -114,6 +114,7 @@ struct CreateOrSignInView: View {
             NavigationLink {
                 OnBoardingManagerView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
                     .environmentObject(signUpModel)
+                    .environmentObject(profileModel)
             } label: {
                 Text(signUpModel.onboardingStep == .phone ? "Create account" : "Continue account creation")
                     .foregroundStyle(.syncBlack)

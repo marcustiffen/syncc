@@ -46,63 +46,6 @@ final class SignUpModel: ObservableObject {
     
     @Published var loadingMessage = ""
             
-    
-//    func createAccount() async throws -> DBUser {
-//        let userId = Auth.auth().currentUser?.uid ?? ""
-//        
-//        // Convert DBImage objects to UIImages for upload
-//        let uiSelectedImages = images.map { $0.uiImage }
-//        
-//        loadingMessage = "Preparing images for upload..."
-//        
-//        // Start uploading images and continue with account creation
-//        loadingMessage = "Uploading images..."
-//        let urls = await DBUserManager.shared.uploadPhoto(selectedImages: uiSelectedImages, uid: userId)
-//        
-//        // Ensure the URLs are correctly assigned to the corresponding DBImage objects
-//        var updatedImages = images
-//        for (index, url) in urls.enumerated() {
-//            if index < updatedImages.count {
-//                updatedImages[index].url = url
-//            }
-//        }
-//        
-//        loadingMessage = "Creating account..."
-//        
-//        // Create user object with updated image URLs
-//        let createdUser = DBUser(
-//            onboardingStep: onboardingStep,
-//            uid: userId,
-//            phoneNumber: phoneNumber,
-//            email: email,
-//            name: "\(firstName) \(lastName)",
-//            dateOfBirth: dateOfBirth,
-//            sex: sex,
-//            location: location,
-//            bio: bio,
-//            fitnessTypes: fitnessTypes,
-//            fitnessGoals: fitnessGoals,
-//            fitnessLevel: fitnessLevel,
-//            height: height,
-//            weight: weight,
-//            images: updatedImages,  // Now has the correct URLs
-//            filteredAgeRange: filteredAgeRange,
-//            filteredSex: filteredSex,
-//            filteredMatchRadius: filteredMatchRadius,
-//            filteredFitnessTypes: filteredFitnessTypes,
-//            filteredFitnessGoals: filteredFitnessGoals,
-//            filteredFitnessLevel: filteredFitnessLevel,
-//            isBanned: false,
-//            dailyLikes: 3
-//        )
-//        
-//        loadingMessage = "Almost there..."
-//        
-//        // Save user in Firestore
-//        try await DBUserManager.shared.createNewUser(user: createdUser)
-//        
-//        return createdUser
-//    }
 
     func createAccount() async throws -> DBUser {
         let createdUser = try await DBUserManager.shared.getUser(uid: uid!)

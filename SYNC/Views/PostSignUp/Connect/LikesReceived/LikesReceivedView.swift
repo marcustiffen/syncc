@@ -233,12 +233,3 @@ struct MiniProfileCardView: View {
 //        
 //    }
 }
-
-
-extension CLLocationCoordinate2D {
-    func distance(to other: CLLocationCoordinate2D) -> Double {
-        let thisLocation = CLLocation(latitude: self.latitude, longitude: self.longitude)
-        let otherLocation = CLLocation(latitude: other.latitude, longitude: other.longitude)
-        return thisLocation.distance(from: otherLocation) / 1000.0 // Distance in kilometers
-    }
-}

@@ -1,3 +1,6 @@
+import SwiftUI
+
+
 struct EmptyFilterResultsView: View {
     let onClearFilters: () -> Void
     

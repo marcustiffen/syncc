@@ -1,0 +1,73 @@
+# Fastlane configuration for Syncc
+# Automates both TestFlight (staging) and App Store (release) uploads
+
+default_platform(:ios)
+
+platform :ios do
+
+  ##################################################
+  # 🔑 Authentication (App Store Connect API Key)
+  ##################################################
+  api_key = app_store_connect_api_key(
+    key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],           # From App Store Connect
+    issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],     # From App Store Connect
+    key_content: ENV["APP_STORE_CONNECT_API_KEY_KEY_CONTENTS"],# The .p8 file content
+    in_house: false
+  )
+
+
+  ##################################################
+  # 🚀 STAGING BUILD (External Testers via TestFlight)
+  ##################################################
+  desc "Push a new beta build of Syncc-Staging to TestFlight for external testers"
+  lane :staging do
+    match(
+      type: "appstore",                # TestFlight requires app-store profiles
+      readonly: false,                 # allow creation if needed
+      app_identifier: "com.marcustiffen.SYNC"
+    )
+
+    build_app(
+      scheme: "Syncc-Staging",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "com.marcustiffen.SYNC" => "match AppStore com.marcustiffen.SYNC"
+        }
+      }
+    )
+
+    upload_to_testflight(
+      api_key: api_key,
+      skip_waiting_for_build_processing: false,
+      distribute_external: true,          # 👈 Send to external testers
+      groups: ["Syncc testers"],          # 👈 Name of your TestFlight group
+      changelog: "New staging build uploaded via Fastlane 🚀"
+    )
+  end
+
+
+  ##################################################
+  # 🏁 RELEASE BUILD (App Store submission)
+  ##################################################
+  desc "Push a new release build to App Store Connect"
+  lane :release do
+    match(
+      type: "appstore",
+      readonly: false,
+      app_identifier: "com.marcustiffen.SYNC"
+    )
+
+    build_app(
+      scheme: "Syncc",
+      export_method: "app-store"
+    )
+
+    upload_to_app_store(
+      api_key: api_key,
+      submit_for_review: false,       # change to true if you want auto-submission
+      automatic_release: false,
+      changelog: "Official release build uploaded via Fastlane 🚀"
+    )
+  end
+end

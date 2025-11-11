@@ -49,3 +49,13 @@ struct DBLocation: Identifiable, Codable {
 
 
 
+extension DBLocation {
+    /// Calculates the distance between this location and another DBLocation
+    /// - Parameter other: The other DBLocation to calculate distance to
+    /// - Returns: Distance in kilometers
+    func distance(to other: DBLocation) -> Double {
+        let thisLocation = CLLocation(latitude: self.location.latitude, longitude: self.location.longitude)
+        let otherLocation = CLLocation(latitude: other.location.latitude, longitude: other.location.longitude)
+        return thisLocation.distance(from: otherLocation) / 1000.0 // Distance in kilometers
+    }
+}

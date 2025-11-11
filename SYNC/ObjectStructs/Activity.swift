@@ -9,7 +9,7 @@ struct Activity: Identifiable, Codable {
     var location: DBLocation?
     var startTime: Date
     var createdAt: Date
-    var participants: [String]?
+    var participants: [String]
     var nonParticipants: [String]?
     var status: String // Upcoming, Completed, Canceled
     
@@ -19,7 +19,7 @@ struct Activity: Identifiable, Codable {
     var maxParticipants: Int?
     
     
-    init(id: String, creatorId: String, name: String, description: String? = nil, location: DBLocation? = nil, startTime: Date, createdAt: Date, participants: [String]? = nil, nonParticipants: [String]? = nil, status: String, upvotes: Int? = nil, downvotes: Int? = nil, maxParticipants: Int? = nil) {
+    init(id: String, creatorId: String, name: String, description: String? = nil, location: DBLocation? = nil, startTime: Date, createdAt: Date, participants: [String], nonParticipants: [String]? = nil, status: String, upvotes: Int? = nil, downvotes: Int? = nil, maxParticipants: Int? = nil) {
         self.id = id
         self.creatorId = creatorId
         self.name = name
@@ -62,7 +62,7 @@ struct Activity: Identifiable, Codable {
         self.location = try container.decodeIfPresent(DBLocation.self, forKey: .location)
         self.startTime = try container.decode(Date.self, forKey: .startTime)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
-        self.participants = try container.decodeIfPresent([String].self, forKey: .participants)
+        self.participants = try container.decode([String].self, forKey: .participants)
         self.nonParticipants = try container.decodeIfPresent([String].self, forKey: .nonParticipants)
         self.status = try container.decode(String.self, forKey: .status)
         self.upvotes = try container.decodeIfPresent(Int.self, forKey: .upvotes)
@@ -80,7 +80,7 @@ struct Activity: Identifiable, Codable {
         try container.encodeIfPresent(self.location, forKey: .location)
         try container.encodeIfPresent(self.startTime, forKey: .startTime)
         try container.encode(self.createdAt, forKey: .createdAt)
-        try container.encodeIfPresent(self.participants, forKey: .participants)
+        try container.encode(self.participants, forKey: .participants)
         try container.encodeIfPresent(self.nonParticipants, forKey: .nonParticipants)
         try container.encode(self.status, forKey: .status)
         try container.encodeIfPresent(self.upvotes, forKey: .upvotes)
