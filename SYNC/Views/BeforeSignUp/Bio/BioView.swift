@@ -47,9 +47,6 @@ struct BioView: View {
                 
                 HStack {
                     Spacer()
-//                    OnBoardingNavigationLink(text: "Next") {
-//                            ImageSelectorView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
-//                    }
                     OnBoardingButton(text: "Next") {
                         withAnimation {
                             signUpModel.onboardingStep = .images
@@ -66,5 +63,31 @@ struct BioView: View {
         .onTapGesture {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
+    }
+}
+
+
+
+// MARK: - Preview
+
+struct BioView_Previews: PreviewProvider {
+    @State static var showCreateOrSignInView = true
+    @State static var isLoading = false
+    @State static var loadingViewFinishedLoading = false
+    
+    static var previews: some View {
+        // Mock SignUpModel for preview
+        let mockSignUpModel = SignUpModel()
+        mockSignUpModel.bio = ""
+        mockSignUpModel.onboardingStep = .bio
+        mockSignUpModel.uid = "mockUID123"
+        
+        return BioView(
+            showCreateOrSignInView: $showCreateOrSignInView,
+            isLoading: $isLoading,
+            loadingViewFinishedLoading: $loadingViewFinishedLoading
+        )
+        .environmentObject(mockSignUpModel)
+        .previewLayout(.sizeThatFits)
     }
 }

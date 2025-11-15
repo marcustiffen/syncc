@@ -67,6 +67,29 @@ struct ChatView: View {
             .padding(.horizontal, 10)
             
             Spacer()
+//            ScrollView {
+//                ScrollViewReader { proxy in
+//                    LazyVStack {
+//                        ForEach(messagesManager.messages.indices, id: \.self) { index in
+//                            let message = messagesManager.messages[index]
+//                            let isLastMessage = (index == messagesManager.messages.count - 1)
+//                            
+//                            MessageBubbleView(message: message, isLastMessage: isLastMessage)
+//                                .id(index)
+//                                .transition(.move(edge: .trailing).combined(with: .opacity))
+//                        }
+//                    }
+//                    .onChange(of: messagesManager.messages.count) {
+//                        withAnimation {
+//                            proxy.scrollTo(messagesManager.messages.count - 1)
+//                        }
+//                    }
+//                }
+//            }
+//            .animation(.easeIn, value: messagesManager.messages.count)
+//            .padding(.horizontal, 10)
+            
+
             ScrollView {
                 ScrollViewReader { proxy in
                     LazyVStack {
@@ -74,9 +97,25 @@ struct ChatView: View {
                             let message = messagesManager.messages[index]
                             let isLastMessage = (index == messagesManager.messages.count - 1)
                             
-                            MessageBubbleView(message: message, isLastMessage: isLastMessage)
-                                .id(index)
-                                .transition(.move(edge: .trailing).combined(with: .opacity))
+                            // NEW: Determine if this is the last message in a consecutive sequence
+                            let isLastInSequence: Bool = {
+                                // If this is the last message overall, it's the last in sequence
+                                if index == messagesManager.messages.count - 1 {
+                                    return true
+                                }
+                                
+                                // Check if the next message is from a different sender
+                                let nextMessage = messagesManager.messages[index + 1]
+                                return message.senderId != nextMessage.senderId
+                            }()
+                            
+                            MessageBubbleView(
+                                message: message,
+                                isLastMessage: isLastMessage,
+                                isLastInSequence: isLastInSequence
+                            )
+                            .id(index)
+                            .transition(.move(edge: .trailing).combined(with: .opacity))
                         }
                     }
                     .onChange(of: messagesManager.messages.count) {
@@ -91,7 +130,6 @@ struct ChatView: View {
             
             MessageFieldView(
                 messages: $messagesManager.messages,
-//                showPayWallView: $showPayWallView,
                 chatRoomId: chatRoomId,
                 messageReceiver: messageReceiver,
                 messagesManager: messagesManager // Pass the messages manager

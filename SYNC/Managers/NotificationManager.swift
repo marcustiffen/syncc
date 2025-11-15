@@ -8,17 +8,29 @@ class NotificationManager: ObservableObject {
     private lazy var functions = Functions.functions()
     
     func sendSingularPushNotification(token: String, message: String, title: String, completion: @escaping (Result<Bool, Error>) -> Void) {
-        #if STAGING
-        guard let url = URL(string: "https://us-central1-syncc-staging.cloudfunctions.net/sendNotification") else {
+//        #if STAGING
+//        guard let url = URL(string: "https://us-central1-syncc-staging.cloudfunctions.net/sendNotification") else {
+//            print("Invalid URL")
+//            return
+//        }
+//        #else
+//        guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/sendNotification") else {
+//            print("Invalid URL")
+//            return
+//        }
+//        #endif
+        
+        print("API_SEND_NOTIFICATION_URL:",
+              Bundle.main.object(forInfoDictionaryKey: "API_SEND_NOTIFICATION_URL") ?? "nil")
+
+
+
+        
+        guard let url = URL(string: Bundle.main.object(forInfoDictionaryKey: "API_SEND_NOTIFICATION_URL") as! String) else {
             print("Invalid URL")
             return
         }
-        #else
-        guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/sendNotification") else {
-            print("Invalid URL")
-            return
-        }
-        #endif
+        
         
         // Create the request
         var request = URLRequest(url: url)

@@ -6,6 +6,16 @@
 	<array>
 		<string>com.marcustiffen.SYNC</string>
 	</array>
+	<key>API_DELETE_USER_URL</key>
+	<string>$(API_DELETE_USER_URL)</string>
+	<key>API_SEND_LIKE_URL</key>
+	<string>$(API_SEND_LIKE_URL)</string>
+	<key>API_UNMATCH_USER_URL</key>
+	<string>$(API_UNMATCH_USER_URL)</string>
+	<key>API_SEND_LIKE_FREE_URL</key>
+	<string>$(API_SEND_LIKE_FREE_URL)</string>
+	<key>API_SEND_NOTIFICATION_URL</key>
+	<string>$(API_SEND_NOTIFICATION_URL)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

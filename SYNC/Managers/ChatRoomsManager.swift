@@ -27,55 +27,7 @@ class ChatRoomsManager: ObservableObject {
         return unreadCounts.values.reduce(0, +)
     }
     
-    // Start listening - only once per user session
-//    func startListening(for userId: String) {
-//        // Don't start if already listening for this user
-//        guard !isListening || currentUserId != userId else { return }
-//        
-//        // Clean up existing listener if switching users
-//        stopListening()
-//        
-//        currentUserId = userId
-//        isListening = true
-//        
-//        print("Starting Firestore listener for user: \(userId)")
-//        
-//        chatRoomsListener = chatRoomsCollection()
-//            .whereField("users", arrayContains: userId)
-//            .addSnapshotListener { [weak self] querySnapshot, error in
-//                guard let self = self else { return }
-//                
-//                if let error = error {
-//                    print("Error listening to chat rooms: \(error)")
-//                    return
-//                }
-//                
-//                guard let documents = querySnapshot?.documents else {
-//                    print("No chat room documents found")
-//                    return
-//                }
-//                
-//                let chatRooms = documents.compactMap { document -> ChatRoom? in
-//                    do {
-//                        var chatRoom = try document.data(as: ChatRoom.self)
-//                        chatRoom.id = document.documentID
-//                        return chatRoom
-//                    } catch {
-//                        print("Error decoding chat room: \(error)")
-//                        return nil
-//                    }
-//                }
-//                
-//                DispatchQueue.main.async {
-//                    self.chatRooms = chatRooms.sorted { $0.createdAt > $1.createdAt }
-//                }
-//                
-//                // Pre-fetch user data for all chat rooms
-//                Task {
-//                    await self.prefetchUserData(for: chatRooms, currentUserId: userId)
-//                }
-//            }
-//    }
+
     func startListening(for userId: String) {
         guard !isListening || currentUserId != userId else { return }
         
@@ -262,6 +214,3 @@ extension ChatRoomsManager {
         }
     }
 }
-
-
-

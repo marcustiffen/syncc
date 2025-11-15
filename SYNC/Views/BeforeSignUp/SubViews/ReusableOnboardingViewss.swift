@@ -123,16 +123,6 @@ struct CustomOnBoardingTextEditor: View {
             CustomTextEditor(text: $text, placeholder: placeholder)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 8)
-            
-            if text.isEmpty {
-                Text(placeholder)
-                    .h2Style()
-                    .foregroundStyle(.syncGrey)
-                    .italic()
-                    .padding(.top, 18)
-                    .padding(.leading, 13)
-                    .allowsHitTesting(false) // Prevents placeholder from blocking text input
-            }
         }
     }
 }

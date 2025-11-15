@@ -133,8 +133,10 @@ struct MyActivityView: View {
             Spacer()
             if viewModel.isLoadingInitial {
                 loadingView
+                Spacer()
             } else if viewModel.activities.isEmpty {
                 emptyStateView
+                Spacer()
             } else {
                 activitiesListView
             }

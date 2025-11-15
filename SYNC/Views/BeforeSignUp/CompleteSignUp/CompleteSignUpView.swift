@@ -43,10 +43,11 @@ struct CompleteSignUpView: View {
                         
                         // Run all operations concurrently
 //                        chatRoomsManager.addListenerChatRooms(userId: newUser.uid)
-                        ChatRoomsManager().startListening(for: newUser.uid)
+//                        ChatRoomsManager().startListening(for: newUser.uid)
 //                        completeUsersModel.callAllListenersForUser(userId: newUser.uid)
 //                        completeUsersModel.setupAllListeners(currentUser: newUser)
                         
+                        chatRoomsManager.startListening(for: newUser.uid)
                         await profileModel.setUserDeviceToken(uid: newUser.uid)
                         
                         // Hide the create/sign in view

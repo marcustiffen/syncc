@@ -1,7 +1,7 @@
 import Foundation
 
 
-struct GroupChatRoom: Identifiable, Codable {
+struct /*Group*/ChatRoom: Identifiable, Codable {
     var id: String = ""
     var name: String
     var users: [String]

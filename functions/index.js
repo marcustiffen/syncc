@@ -219,6 +219,7 @@ async function initiateMatch(userAId, userBId) {
     const chatRoomRef = db.collection("chatRooms").doc();
     batch.set(chatRoomRef, {
       id: chatRoomRef.id,
+      name: chatRoomRef.id,
       users: [userAId, userBId],
       createdAt: timestamp,
     });

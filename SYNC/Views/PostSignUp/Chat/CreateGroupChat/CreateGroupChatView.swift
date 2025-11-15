@@ -473,7 +473,7 @@ class CreateGroupChatViewModel: ObservableObject {
         var allUsers = Array(selectedMembers)
         allUsers.append(currentUserId)
         
-        let groupChat = GroupChatRoom(
+        let groupChat = /*Group*/ChatRoom(
             name: groupChatName,
             users: allUsers,
             createdAt: Date()
@@ -511,7 +511,6 @@ struct CreateGroupChatView: View {
     }
     
     var body: some View {
-        NavigationView {
             VStack(spacing: 20) {
                 headerSection
                     .padding(.top, 50)
@@ -540,7 +539,6 @@ struct CreateGroupChatView: View {
                                 }
                             }
                         }
-//                        .frame(maxHeight: 200)
                     }
                     .padding(.top, 10)
                 }
@@ -617,7 +615,7 @@ struct CreateGroupChatView: View {
             } message: {
                 Text(alertMessage)
             }
-        }
+        
     }
     
     private var selectedMemberUsers: [DBUser] {

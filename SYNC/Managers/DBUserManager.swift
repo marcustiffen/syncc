@@ -42,18 +42,22 @@ class DBUserManager: ObservableObject {
     
     func deleteUser(uid: String, completion: @escaping (Result<String, Error>) -> Void) {
         do {
-            #if STAGING
-            guard let url = URL(string: "https://us-central1-syncc-staging.cloudfunctions.net/deleteUser") else {
-                completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
-                return
-            }
-            #else
-            guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/deleteUser") else {
-                completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
-                return
-            }
-            #endif
+//            #if STAGING
+//            guard let url = URL(string: "https://us-central1-syncc-staging.cloudfunctions.net/deleteUser") else {
+//                completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+//                return
+//            }
+//            #else
+//            guard let url = URL(string: "https://us-central1-sync-69d00.cloudfunctions.net/deleteUser") else {
+//                completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+//                return
+//            }
+//            #endif
 
+            guard let url = URL(string: Bundle.main.object(forInfoDictionaryKey: "API_DELETE_USER_URL") as! String) else {
+                completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+                return
+            }
             
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
