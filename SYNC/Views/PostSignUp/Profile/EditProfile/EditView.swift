@@ -8,6 +8,8 @@ struct EditView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack(spacing: 10) {
+                
+                
                 ScrollView(showsIndicators: false) {
                     PhotoSection()
                     LocationSection(profileModel: profileModel)
@@ -37,5 +39,14 @@ struct EditView: View {
         } catch {
             print("Error updating user profile: \(error)")
         }
+    }
+    
+    private var headerSection: some View {
+        HStack {
+            Text("Edit")
+                .h1Style()
+            Spacer()
+        }
+        .foregroundStyle(.syncBlack)
     }
 }

@@ -13,10 +13,10 @@ struct LoadingView: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .foregroundStyle(.syncWhite)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea()
+//            Rectangle()
+//                .foregroundStyle(.syncWhite)
+//                .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                .ignoresSafeArea()
             
             FullSine()
                 .trim(from: 0, to: fullSineProgress)
@@ -32,6 +32,7 @@ struct LoadingView: View {
                 .h1Style()
                 .padding(.top, 225)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             startAnimation()
         }

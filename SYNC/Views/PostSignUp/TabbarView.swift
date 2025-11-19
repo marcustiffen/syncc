@@ -44,7 +44,7 @@ struct TabbarView: View {
                         .environmentObject(chatRoomsManager)
                         .environmentObject(subscriptionModel)
                 case 4:
-                    ProfileView(showCreateOrSignInView: $showCreateOrSignInView)
+                    EditProfileView(showCreateOrSignInView: $showCreateOrSignInView)
                         .environmentObject(profileModel)
                         .environmentObject(chatRoomsManager)
                         .environmentObject(subscriptionModel)

@@ -19,7 +19,7 @@ struct InspectUserView: View {
             headerSection
                 .padding(.top, 50)
             
-            ProfileCardView(user: user, isCurrentUser: false) {
+            ProfileCardView(user: user, isCurrentUser: false, showEditButton: false) {
                 likeAction()
                 dismiss()
             } dislikeAction: {

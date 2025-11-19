@@ -4,11 +4,12 @@ import PhotosUI
 
 
 struct EditProfileView: View {
+    @Binding var showCreateOrSignInView: Bool
     @EnvironmentObject var profileModel: ProfileModel
     @Environment(\.dismiss) var dismiss
     
     @State private var selectedTab = 0
-    let tabs = ["View", "Edit"]
+    let tabs = ["View", "Activities"]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -25,7 +26,7 @@ struct EditProfileView: View {
                     }) {
                         VStack(spacing: 4) {
                             Text(tabs[index])
-//                                .font(.system(size: 16, weight: selectedTab == index ? .semibold : .regular))
+                            //                                .font(.system(size: 16, weight: selectedTab == index ? .semibold : .regular))
                                 .font(.h2)
                                 .fontWeight(selectedTab == index ? .semibold : .regular)
                                 .foregroundStyle(selectedTab == index ? .black : .gray)
@@ -42,11 +43,13 @@ struct EditProfileView: View {
             .padding(.horizontal, 10)
             // Tab Content
             if selectedTab == 0 {
-                ProfileCardView(user: profileModel.user, isCurrentUser: true, likeAction: {}, dislikeAction: {})
+                ProfileCardView(user: profileModel.user, isCurrentUser: true, showEditButton: true, likeAction: {}, dislikeAction: {})
                     .padding(.top, 10)
             } else if selectedTab == 1 {
-                EditView()
-                    .padding(.top, 10)
+                //                EditView()
+                //                    .padding(.top, 10)
+                MyActivityView()
+                    .environmentObject(profileModel)
             }
         }
         .padding([.horizontal, .top], 10)
@@ -58,13 +61,17 @@ struct EditProfileView: View {
     
     private var headerSection: some View {
         HStack {
-            SyncBackButton { dismiss() }
-            Spacer()
             Text("Profile")
-                .h1Style()
             
             Spacer()
+            
+            NavigationLink {
+                AccountView(showCreateOrSignInView: $showCreateOrSignInView)
+            } label: {
+                Image(systemName: "gear")
+            }
         }
+        .h1Style()
         .foregroundStyle(.syncBlack)
         .padding(.horizontal, 10)
         .padding(.bottom, 16)

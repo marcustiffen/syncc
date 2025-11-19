@@ -413,24 +413,20 @@ struct ActivityCardView: View {
             
             // Action buttons and participants
             HStack(spacing: 12) {
-                if user?.uid != profileModel.user?.uid {
-                    participationSection
-                } else {
-                    // Show participant preview for activity creator
-                    Button {
-                        showParticipantsList = true
-                    } label: {
-                        HStack(spacing: 8) {
-                            ParticipantsPreviewView(participantIds: activity.participants)
-                            
-                            if !activity.participants.isEmpty {
-                                Text("\(activity.participants.count)")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.secondary)
-                            }
+                Button {
+                    showParticipantsList = true
+                } label: {
+                    HStack(spacing: 8) {
+                        ParticipantsPreviewView(participantIds: activity.participants)
+                        
+                        if !activity.participants.isEmpty {
+                            Text("\(activity.participants.count)")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(.secondary)
                         }
                     }
                 }
+                
                 
                 Spacer()
                 
@@ -565,35 +561,56 @@ struct ActivityCardView: View {
     }
 }
 
-// MARK: - Participants List View (Optional)
+
 struct ParticipantsListView: View {
     let participantIds: [String]
     @State private var participants: [DBUser] = []
     
+    @State private var isLoading: Bool = false
+    
     var body: some View {
-        NavigationView {
-            List(participants, id: \.uid) { participant in
-                HStack {
-                    if let image = participant.images?.first {
-                        ImageLoaderView(urlString: image.url)
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 50, height: 50)
-                            .clipShape(Circle())
-                    } else {
-                        Circle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 50, height: 50)
+        VStack {
+            titleView()
+                .padding(.top, 10)
+            
+            Spacer()
+            if !isLoading {
+                ScrollView {
+                    ForEach(participants, id: \.uid) { participant in
+                        HStack {
+                            if let image = participant.images?.first {
+                                ImageLoaderView(urlString: image.url)
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 50, height: 50)
+                                    .clipShape(Circle())
+                            } else {
+                                Circle()
+                                    .fill(Color.gray.opacity(0.3))
+                                    .frame(width: 50, height: 50)
+                            }
+                            
+                            Text(participant.name ?? "Unknown")
+                                .font(.headline)
+                            
+                            Spacer()
+                        }
+                        .padding(5)
+                        .background(
+                            Color.gray.opacity(0.1).clipShape(.rect(cornerRadius: 10))
+                        )
                     }
-                    
-                    Text(participant.name ?? "Unknown")
-                        .font(.headline)
                 }
+            } else {
+                ProgressView("Loading Participants...")
             }
-            .navigationTitle("Participants (\(participantIds.count))")
-            .navigationBarTitleDisplayMode(.inline)
+            
+            Spacer()
         }
+        .padding(.horizontal, 10)
         .task {
+            isLoading = true
             await loadParticipants()
+            isLoading = false
         }
     }
     
@@ -610,5 +627,14 @@ struct ParticipantsListView: View {
         }
         
         self.participants = loadedUsers
+    }
+    
+    private func titleView() -> some View {
+        HStack {
+            Text("Participants")
+            Spacer()
+        }
+        .h1Style()
+        .foregroundStyle(.syncBlack)
     }
 }

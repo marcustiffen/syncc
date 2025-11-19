@@ -1,3 +1,5 @@
+import SwiftUI
+
 struct GroupMembersView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var chatRoomsManager: ChatRoomsManager

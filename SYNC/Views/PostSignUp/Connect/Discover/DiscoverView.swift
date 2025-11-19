@@ -31,6 +31,7 @@ struct DiscoverView: View {
                     ProfileCardView(
                         user: user,
                         isCurrentUser: false,
+                        showEditButton: false,
                         likeAction: {
                             guard let currentUser = profileModel.user else { return }
                             viewModel.performCardAction(

@@ -119,17 +119,6 @@ struct MyActivityView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                SyncBackButton { dismiss() }
-                
-                Text("My Activities")
-                    .h1Style()
-                    .foregroundStyle(.syncBlack)
-                
-                Spacer()
-            }
-            .padding(.horizontal, 10)
-            
             Spacer()
             if viewModel.isLoadingInitial {
                 loadingView
