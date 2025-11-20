@@ -14,18 +14,12 @@ struct LikesReceivedView: View {
     @EnvironmentObject var profileModel: ProfileModel
     @EnvironmentObject var subscriptionModel: SubscriptionModel
     
-//    @StateObject var likesReceivedViewModel = LikesReceivedViewModel()
-//    @StateObject private var notificationManager = NotificationManager.shared
-    
     @EnvironmentObject var likesReceivedViewModel: LikesReceivedViewModel
     
     @State private var showPayWallView = false
 
     var body: some View {
         VStack(alignment: .center) {
-//            headerSection
-//                .padding(.top, 50)
-            
             if likesReceivedViewModel.isLoading {
                 ProgressView("Loading users...")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -42,16 +36,6 @@ struct LikesReceivedView: View {
         }
         .background(Color.white.ignoresSafeArea())
     }
-    
-//    private var headerSection: some View {
-//        HStack {
-//            Text("Syncc requests")
-//            Spacer()
-//        }
-//        .h1Style()
-//        .foregroundStyle(.syncBlack)
-//        .padding(.horizontal, 10)
-//    }
     
     private var emptyStateView: some View {
         VStack {
@@ -109,6 +93,11 @@ struct LikesReceivedView: View {
                             ))
                     }
                     .disabled(subscriptionModel.isSubscriptionActive == false)
+                    .onTapGesture {
+                        if subscriptionModel.isSubscriptionActive == false {
+                            showPayWallView = true
+                        }
+                    }
                 }
             }
             .padding(.leading, 10)
@@ -187,24 +176,12 @@ struct MiniProfileCardView: View {
                 
                 HStack {
                     LikeButton(user: user) {
-//                        if subscriptionModel.isSubscriptionActive {
-//                            Task {
-//                                try await likeAction()
-//                            }
-//                        } else {
-//                            showPayWallView = true
-//                        }
                         likeAction()
                     }
                     
                     Spacer()
                     
                     DislikeButton(user: user) {
-//                        if subscriptionModel.isSubscriptionActive {
-//                            dislikeAction()
-//                        } else {
-//                            showPayWallView = true
-//                        }
                         dislikeAction()
                     }
                 }
@@ -224,12 +201,4 @@ struct MiniProfileCardView: View {
             }
         }
     }
-    
-//    func likeAction() async throws {
-//        
-//    }
-//    
-//    func dislikeAction() {
-//        
-//    }
 }

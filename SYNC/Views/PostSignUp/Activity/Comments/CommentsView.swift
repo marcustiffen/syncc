@@ -141,7 +141,7 @@ struct CommentsView: View {
         isTextFieldFocused = false
         
         do {
-            try await commentsManager.postComment(text: text, userId: userId)
+            try await commentsManager.postComment(text: text, userId: userId, activity: activity)
         } catch {
             print("Failed to post comment: \(error.localizedDescription)")
         }

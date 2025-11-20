@@ -53,9 +53,6 @@ struct FilterView: View {
                             get: { profileModel.user?.filteredSex ?? "Male" },
                             set: { newSex in
                                 profileModel.user?.filteredSex = newSex
-//                                Task {
-//                                    try await userManager.updateUserField(uid: profileModel.user?.uid ?? "", field: "filteredSex", value: newSex)
-//                                }
                             }
                         )) {
                             ForEach(filteredSexes, id: \.self) { sex in
@@ -94,9 +91,6 @@ struct FilterView: View {
                         get: { /*filteredMatchRadius ?? 0*/ profileModel.user?.filteredMatchRadius ?? 0}, // Default to 0 if nil
                         set: { radius in
                             profileModel.user?.filteredMatchRadius = radius
-//                            Task {
-//                                try await userManager.updateUserField(uid: profileModel.user?.uid ?? "", field: "filteredMatchRadius", value: radius)
-//                            }
                         }  // Update the original value
                     ), in: 0...100, step: 1)
                     .tint(.syncBlack)
@@ -157,9 +151,6 @@ struct FilterView: View {
                                 // Only update fitness level if user is a subscriber
                                 if subscriptionModel.isSubscriptionActive {
                                     profileModel.user?.filteredFitnessLevel = fitnessLevel
-//                                    Task {
-//                                        try await userManager.updateUserField(uid: profileModel.user?.uid ?? "", field: "filteredFitnessLevel", value: fitnessLevel)
-//                                    }
                                 } else {
                                     // Show paywall without changing the value
                                     showPayWallView = true

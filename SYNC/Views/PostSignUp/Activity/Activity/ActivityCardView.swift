@@ -600,6 +600,7 @@ struct ParticipantsListView: View {
                         )
                     }
                 }
+                .padding(.top, 10)
             } else {
                 ProgressView("Loading Participants...")
             }

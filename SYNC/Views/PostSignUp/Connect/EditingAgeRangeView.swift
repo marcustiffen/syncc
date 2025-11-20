@@ -50,13 +50,6 @@ struct EditingAgeRangeView: View {
                         get: { ageRange.max },
                         set: { newMaxalue in
                             ageRange.max = newMaxalue
-//                            Task {
-//                                try await userManager.updateUserField(
-//                                    uid: profileModel.user?.uid ?? "",
-//                                    field: "filteredAgeRange.max",
-//                                    value: newValue
-//                                )
-//                            }
                         }
                     )) {
                         ForEach(18..<100, id: \.self) { age in
@@ -69,6 +62,24 @@ struct EditingAgeRangeView: View {
                     .pickerStyle(WheelPickerStyle())
                 }
             }
+            
+            Button {
+                isPresented.toggle()
+            } label: {
+                HStack {
+                    Text("Apply")
+                        .frame(maxWidth: .infinity)
+                        .foregroundStyle(.syncBlack)
+                        .h2Style()
+                        .padding(.vertical, 10)
+                        .background(
+                            Rectangle()
+                                .clipShape(.rect(cornerRadius: 10))
+                                .foregroundStyle(.syncGreen)
+                        )
+                }
+            }
+            
             Spacer()
         }
         .padding(.horizontal, 10)

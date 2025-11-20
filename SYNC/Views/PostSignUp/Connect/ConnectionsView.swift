@@ -47,8 +47,7 @@ struct ConnectionsView: View {
             
             if selectedTab == 0 {
                 DiscoverView(showCreateOrSignInView: $showCreateOrSignInView,
-                         loadingViewFinishedLoading: $loadingViewFinishedLoading,
-                         isLoading: $isLoading)
+                         loadingViewFinishedLoading: $loadingViewFinishedLoading)
                 .environmentObject(profileModel)
                 .environmentObject(chatRoomsManager)
                 .environmentObject(subscriptionModel)

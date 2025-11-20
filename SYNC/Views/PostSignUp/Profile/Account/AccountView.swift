@@ -33,6 +33,7 @@ struct AccountView: View {
         }
         .navigationDestination(isPresented: $navigateToCreateOrSignInView, destination: {
             CreateOrSignInView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: .constant(false), loadingViewFinishedLoading: .constant(false), bannedMessage: "")
+                .environmentObject(profileModel)
         })
         .navigationDestination(isPresented: $navigateToConfirmDeletionView, destination: {
             ConfirmDeletionView(showCreateOrSignInView: $showCreateOrSignInView)
@@ -115,9 +116,6 @@ struct AccountView: View {
                         Task {
                             do {
                                 try profileModel.signOut()
-                                //                            withAnimation {
-                                //                                showCreateOrSignInView = true
-                                //                            }
                                 navigateToCreateOrSignInView = true
                             } catch {
                                 print("Logout failed: \(error)")

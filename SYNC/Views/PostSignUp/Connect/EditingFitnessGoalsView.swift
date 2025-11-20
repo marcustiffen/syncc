@@ -62,8 +62,25 @@ struct EditingFitnessGoalsView: View {
                     .allowsHitTesting(false)
             }
             
+            Button {
+                isPresented.toggle()
+            } label: {
+                HStack {
+                    Text("Apply")
+                        .frame(maxWidth: .infinity)
+                        .foregroundStyle(.syncBlack)
+                        .h2Style()
+                        .padding(.vertical, 10)
+                        .background(
+                            Rectangle()
+                                .clipShape(.rect(cornerRadius: 10))
+                                .foregroundStyle(.syncGreen)
+                        )
+                }
+            }
             
             Spacer()
+            
         }
         .padding(.horizontal, 10)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
