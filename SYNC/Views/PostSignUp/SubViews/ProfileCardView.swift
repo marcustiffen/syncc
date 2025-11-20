@@ -36,9 +36,11 @@ struct ProfileCardView: View {
         GeometryReader { geometry in
             let screenHeight = geometry.size.height
             let screenWidth = geometry.size.width
-//            let imageHeight = screenHeight * 0.55
             let imageHeight = screenHeight * 0.65
-            let sheetMinOffset = screenHeight * 0.30
+//            let sheetMinOffset = screenHeight * 0.30
+//            let sheetMaxOffset = screenHeight * 0.60
+            
+            let sheetMinOffset = screenHeight * 0.1
             let sheetMaxOffset = screenHeight * 0.60
             
             ZStack(alignment: .top) {
@@ -161,7 +163,6 @@ struct ProfileCardView: View {
             .edgesIgnoringSafeArea(.all)
             .onAppear {
                 if !isInitialized {
-//                    let maxOffset = screenHeight * 0.50
                     let maxOffset = screenHeight * 0.60
                     sheetOffset = maxOffset
                     lastDragValue = maxOffset

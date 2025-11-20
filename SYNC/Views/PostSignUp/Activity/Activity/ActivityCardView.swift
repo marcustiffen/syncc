@@ -577,27 +577,31 @@ struct ParticipantsListView: View {
             if !isLoading {
                 ScrollView {
                     ForEach(participants, id: \.uid) { participant in
-                        HStack {
-                            if let image = participant.images?.first {
-                                ImageLoaderView(urlString: image.url)
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 50, height: 50)
-                                    .clipShape(Circle())
-                            } else {
-                                Circle()
-                                    .fill(Color.gray.opacity(0.3))
-                                    .frame(width: 50, height: 50)
+                        NavigationLink {
+                            InspectUserView(likeAction: {}, dislikeAction: {}, user: participant)
+                        } label: {
+                            HStack {
+                                if let image = participant.images?.first {
+                                    ImageLoaderView(urlString: image.url)
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 50, height: 50)
+                                        .clipShape(Circle())
+                                } else {
+                                    Circle()
+                                        .fill(Color.gray.opacity(0.3))
+                                        .frame(width: 50, height: 50)
+                                }
+                                
+                                Text(participant.name ?? "Unknown")
+                                    .font(.headline)
+                                
+                                Spacer()
                             }
-                            
-                            Text(participant.name ?? "Unknown")
-                                .font(.headline)
-                            
-                            Spacer()
+                            .padding(5)
+                            .background(
+                                Color.gray.opacity(0.1).clipShape(.rect(cornerRadius: 10))
+                            )
                         }
-                        .padding(5)
-                        .background(
-                            Color.gray.opacity(0.1).clipShape(.rect(cornerRadius: 10))
-                        )
                     }
                 }
                 .padding(.top, 10)

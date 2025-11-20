@@ -116,6 +116,36 @@ class ActivityViewModel: ObservableObject {
     }
     
 
+//    private func applyFilters() async {
+//        var result = allActivities
+//        
+//        if let radiusKm = filter.radiusKm,
+//           let userLocation = filter.userLocation {
+//            result = result.filter { activity in
+//                guard let activityLocation = activity.location else {
+//                    return false
+//                }
+//                let distance = userLocation.distance(to: activityLocation)
+//                return distance <= radiusKm
+//            }
+//        }
+//        
+//        if !filter.searchText.isEmpty {
+//            let searchLower = filter.searchText.lowercased()
+//            result = result.filter { activity in
+//                activity.name.lowercased().contains(searchLower) ||
+//                (activity.description?.lowercased().contains(searchLower) ?? false) ||
+//                (activity.location?.name.lowercased().contains(searchLower) ?? false)
+//            }
+//        }
+//        
+//        result.sort { $0.startTime < $1.startTime }
+//        
+//        filteredActivities = result
+//        
+//        print("🔍 Applied filters: \(allActivities.count) → \(filteredActivities.count) activities")
+//    }
+    
     private func applyFilters() async {
         var result = allActivities
         
@@ -139,7 +169,8 @@ class ActivityViewModel: ObservableObject {
             }
         }
         
-        result.sort { $0.startTime < $1.startTime }
+        // ✅ REMOVED: Don't re-sort here, keep Firebase sort order
+        // result.sort { $0.startTime < $1.startTime }
         
         filteredActivities = result
         

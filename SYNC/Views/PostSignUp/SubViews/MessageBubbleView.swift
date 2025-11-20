@@ -180,10 +180,6 @@ struct MessageBubbleView: View {
                         .foregroundStyle(.gray)
                         .frame(width: 20, height: 20)
                 }
-            } else if message.senderId != profileModel.user?.uid {
-                // Spacer to maintain alignment when no avatar
-                Spacer()
-                    .frame(width: 20, height: 20)
             }
             
             // Status and Timestamp

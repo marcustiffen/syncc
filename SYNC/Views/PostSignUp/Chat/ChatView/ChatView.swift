@@ -67,28 +67,6 @@ struct ChatView: View {
             .padding(.horizontal, 10)
             
             Spacer()
-//            ScrollView {
-//                ScrollViewReader { proxy in
-//                    LazyVStack {
-//                        ForEach(messagesManager.messages.indices, id: \.self) { index in
-//                            let message = messagesManager.messages[index]
-//                            let isLastMessage = (index == messagesManager.messages.count - 1)
-//                            
-//                            MessageBubbleView(message: message, isLastMessage: isLastMessage)
-//                                .id(index)
-//                                .transition(.move(edge: .trailing).combined(with: .opacity))
-//                        }
-//                    }
-//                    .onChange(of: messagesManager.messages.count) {
-//                        withAnimation {
-//                            proxy.scrollTo(messagesManager.messages.count - 1)
-//                        }
-//                    }
-//                }
-//            }
-//            .animation(.easeIn, value: messagesManager.messages.count)
-//            .padding(.horizontal, 10)
-            
 
             ScrollView {
                 ScrollViewReader { proxy in
@@ -137,9 +115,6 @@ struct ChatView: View {
             .environmentObject(profileModel)
             .frame(maxWidth: .infinity)
         }
-//        .sheet(isPresented: $showPayWallView, content: {
-//            PayWallView(isPaywallPresented: $showPayWallView)
-//        })
         .alert(isPresented: $showDeleteConfirmation) {
             Alert(
                 title: Text("Wait!"),
@@ -214,7 +189,3 @@ struct ChatView: View {
         }
     }
 }
-
-
-
-

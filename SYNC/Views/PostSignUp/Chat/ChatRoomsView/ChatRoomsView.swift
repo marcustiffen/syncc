@@ -15,6 +15,16 @@ struct ChatRoomsView: View {
             headerSection
                 .padding(.top, 50)
             
+//            ScrollView(.vertical) {
+//                ForEach(chatRoomsManager.chatRooms) { chatroom in
+//                    ChatRoomRowView(
+//                        chatroom: chatroom,
+//                        currentUserId: profileModel.user?.uid ?? ""
+//                    )
+//                    .environmentObject(profileModel)
+//                }
+//            }
+            
             ScrollView(.vertical) {
                 ForEach(chatRoomsManager.chatRooms) { chatroom in
                     ChatRoomRowView(
