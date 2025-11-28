@@ -26,7 +26,6 @@ struct EditProfileView: View {
                     }) {
                         VStack(spacing: 4) {
                             Text(tabs[index])
-                            //                                .font(.system(size: 16, weight: selectedTab == index ? .semibold : .regular))
                                 .font(.h2)
                                 .fontWeight(selectedTab == index ? .semibold : .regular)
                                 .foregroundStyle(selectedTab == index ? .black : .gray)
@@ -67,6 +66,7 @@ struct EditProfileView: View {
             
             NavigationLink {
                 AccountView(showCreateOrSignInView: $showCreateOrSignInView)
+                    .environmentObject(profileModel)
             } label: {
                 Image(systemName: "gear")
             }
