@@ -8,7 +8,9 @@ import UIKit
 
 
 
-struct DBUser: Codable, Equatable {
+struct DBUser: Codable, Equatable, Identifiable {
+    var id: String { uid } // Add this line
+    
     var onboardingStep: OnboardingStep?
     
     var fcmToken: String?

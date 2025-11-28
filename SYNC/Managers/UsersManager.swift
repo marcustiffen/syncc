@@ -70,21 +70,30 @@ class UsersManager: ObservableObject {
     func fetchUsers(for currentUser: DBUser, pageSize: Int = 7, reset: Bool = false, completion: @escaping (Result<[DBUser], Error>) -> Void) {
         if reset { lastDocument = nil }
         
-        // Use adaptive pagination to ensure we get enough users after filtering
         fetchUsersWithAdaptivePagination(currentUser: currentUser, targetCount: pageSize, reset: reset, completion: completion)
     }
+    
     
     private func fetchUsersWithAdaptivePagination(currentUser: DBUser, targetCount: Int, reset: Bool, completion: @escaping (Result<[DBUser], Error>) -> Void) {
         if reset { lastDocument = nil }
         
-        fetchUsersWithAdaptivePaginationRecursive(currentUser: currentUser, targetCount: targetCount, reset: reset, attempts: 0, completion: completion)
+        fetchUsersWithAdaptivePaginationRecursive(
+            currentUser: currentUser,
+            targetCount: targetCount,
+            reset: reset,
+            attempts: 0,
+            accumulatedUsers: [], // ✅ Start with empty array
+            completion: completion
+        )
     }
+
     
-    private func fetchUsersWithAdaptivePaginationRecursive(currentUser: DBUser, targetCount: Int, reset: Bool, attempts: Int, completion: @escaping (Result<[DBUser], Error>) -> Void) {
+    
+    private func fetchUsersWithAdaptivePaginationRecursive(currentUser: DBUser, targetCount: Int, reset: Bool, attempts: Int, accumulatedUsers: [DBUser] = [], completion: @escaping (Result<[DBUser], Error>) -> Void) {
         // Safety check to prevent infinite loops
         if attempts > 3 {
-            print("Too many fetch attempts, returning what we have")
-            completion(.success([]))
+            print("Too many fetch attempts, returning what we have: \(accumulatedUsers.count) users")
+            completion(.success(accumulatedUsers))
             return
         }
         
@@ -113,15 +122,12 @@ class UsersManager: ObservableObject {
         if let level = currentUser.filteredFitnessLevel, !level.isEmpty, level != "Any" {
             query = query.whereField("fitnessLevel", isEqualTo: level)
         }
-//        if let filteredGoals = currentUser.filteredFitnessGoals, !filteredGoals.isEmpty {
-//            query = query.whereField("fitnessGoals", arrayContainsAny: filteredGoals)
-//        }
         if let filteredTypes = currentUser.filteredFitnessTypes, !filteredTypes.isEmpty {
             query = query.whereField("fitnessTypes", arrayContainsAny: filteredTypes)
         }
         
         // Use a larger page size to account for filtering, but never exceed 10
-        let fetchSize = min(max(targetCount * 2, targetCount + 3), 10) // Fetch more to account for filtering, max 10
+        let fetchSize = min(max(targetCount * 2, targetCount + 3), 10)
         query = query.limit(to: fetchSize)
         
         if let lastDoc = lastDocument {
@@ -134,7 +140,7 @@ class UsersManager: ObservableObject {
                 return
             }
             guard let self = self, let snapshot = snapshot else {
-                completion(.success([]))
+                completion(.success(accumulatedUsers))
                 return
             }
             
@@ -154,23 +160,33 @@ class UsersManager: ObservableObject {
                     let filtered = self.applyClientSideDistanceFilter(users: users, currentUser: currentUser)
                         .filter { !excludedIds.contains($0.uid) }
                     
-                    print("After filtering: \(filtered.count) users available (excluded \(excludedIds.count) users)")
+                    // Accumulate the filtered users
+                    let newAccumulated = accumulatedUsers + filtered
                     
-                    // If we don't have enough users and there are more documents, fetch more
-                    if filtered.count < targetCount && !snapshot.documents.isEmpty && snapshot.documents.count >= fetchSize {
-                        print("Only got \(filtered.count) users after filtering, need \(targetCount). Fetching more... (attempt \(attempts + 1))")
-                        self.fetchUsersWithAdaptivePaginationRecursive(currentUser: currentUser, targetCount: targetCount, reset: false, attempts: attempts + 1, completion: completion)
+                    print("After filtering: \(filtered.count) new users, \(newAccumulated.count) total accumulated (excluded \(excludedIds.count) users)")
+                    
+                    // Check if we should fetch more
+                    if newAccumulated.count < targetCount && !snapshot.documents.isEmpty && snapshot.documents.count >= fetchSize {
+                        print("Only got \(newAccumulated.count) users after filtering, need \(targetCount). Fetching more... (attempt \(attempts + 1))")
+                        self.fetchUsersWithAdaptivePaginationRecursive(
+                            currentUser: currentUser,
+                            targetCount: targetCount,
+                            reset: false,
+                            attempts: attempts + 1,
+                            accumulatedUsers: newAccumulated, // ✅ Pass accumulated users
+                            completion: completion
+                        )
                     } else {
                         // Return what we have (either enough users or no more available)
-                        print("Returning \(filtered.count) users (target was \(targetCount))")
-                        completion(.success(filtered))
+                        print("Returning \(newAccumulated.count) users (target was \(targetCount))")
+                        completion(.success(newAccumulated))
                     }
                 }
             }
         }
     }
-    
-    // Get all user IDs from likes_sent, matches, and dismissed_users
+
+
     private func getExcludedUserIds(currentUserId: String, completion: @escaping (Result<Set<String>, Error>) -> Void) {
         let group = DispatchGroup()
         var likedUserIds: Set<String> = []

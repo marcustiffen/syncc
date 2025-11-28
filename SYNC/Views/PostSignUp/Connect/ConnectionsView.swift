@@ -5,7 +5,6 @@ import SwiftUI
 struct ConnectionsView: View {
     
     @EnvironmentObject var profileModel: ProfileModel
-    @EnvironmentObject var chatRoomsManager: ChatRoomsManager
     @EnvironmentObject var subscriptionModel: SubscriptionModel
     
     @Binding var loadingViewFinishedLoading: Bool
@@ -49,12 +48,10 @@ struct ConnectionsView: View {
                 DiscoverView(showCreateOrSignInView: $showCreateOrSignInView,
                          loadingViewFinishedLoading: $loadingViewFinishedLoading)
                 .environmentObject(profileModel)
-                .environmentObject(chatRoomsManager)
                 .environmentObject(subscriptionModel)
             } else if selectedTab == 1 {
                 LikesReceivedView()
                     .environmentObject(profileModel)
-                    .environmentObject(chatRoomsManager)
                     .environmentObject(subscriptionModel)
             }
             

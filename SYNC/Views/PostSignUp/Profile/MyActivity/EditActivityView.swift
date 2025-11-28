@@ -1,3 +1,6 @@
+import SwiftUI
+
+
 struct EditActivityView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var profileModel: ProfileModel

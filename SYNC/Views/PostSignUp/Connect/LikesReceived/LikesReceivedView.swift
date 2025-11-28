@@ -68,7 +68,7 @@ struct LikesReceivedView: View {
                             } else {
                                 showPayWallView = true
                             }
-                        }, user: user)
+                        }, showHeader: true, showButtons: false, user: user)
                     } label: {
                         MiniProfileCardView(showPayWallView: $showPayWallView, likeAction: {
                             if subscriptionModel.isSubscriptionActive {

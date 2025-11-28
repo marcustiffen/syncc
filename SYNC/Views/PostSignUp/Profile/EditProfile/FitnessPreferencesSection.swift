@@ -12,11 +12,11 @@ struct FitnessPreferencesSection: View {
         VStack {
             // Workout Preferences
             PreferenceButton(
-                title: "Edit your workout preferences",
+                title: "Workout preferences",
                 isShowingSheet: $showEditingFitnessTypes
             ) {
                 EditingFitnessTypesView(
-                    titleText: "Edit your workout preferences",
+                    titleText: "Workout preferences",
                     fitnessTypes: Binding(
                         get: { profileModel.user?.fitnessTypes ?? [] },
                         set: { profileModel.user?.fitnessTypes = $0 }
@@ -27,11 +27,11 @@ struct FitnessPreferencesSection: View {
             
             // Fitness Goals
             PreferenceButton(
-                title: "Edit your fitness goals",
+                title: "Fitness goals",
                 isShowingSheet: $showEditingFitnessGoals
             ) {
                 EditingFitnessGoalsView(
-                    titleText: "Edit your fitness goals",
+                    titleText: "Fitness goals",
                     fitnessGoals: Binding(
                         get: { profileModel.user?.fitnessGoals ?? [] },
                         set: { profileModel.user?.fitnessGoals = $0 }

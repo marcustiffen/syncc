@@ -51,6 +51,7 @@ class ActivityViewModel: ObservableObject {
         
         do {
             matchedUserIds = try await activityManager.fetchMatchedUserIds(userId: currentUserId)
+            matchedUserIds.append(currentUserId)
             
             guard !matchedUserIds.isEmpty else {
                 activities = []
@@ -87,7 +88,7 @@ class ActivityViewModel: ObservableObject {
         guard !isLoadingMore && hasMoreActivities else { return }
         
         isLoadingMore = true
-        
+                
         do {
             let moreActivities = try await activityManager.loadMoreActivities(
                 currentUserId: currentUserId,

@@ -7,7 +7,7 @@ struct HeightPicker: View {
     
     var body: some View {
         HStack(alignment: .bottom) {
-            Text("Edit Your Height")
+            Text("Height")
                 .h2Style()
             
             Spacer()

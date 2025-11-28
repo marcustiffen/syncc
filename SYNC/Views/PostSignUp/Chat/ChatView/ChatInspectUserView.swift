@@ -13,7 +13,7 @@ struct ChatInspectUserView: View {
             headerSection
                 .padding(.top, 50)
             
-            ProfileCardView(user: user, isCurrentUser: true, showEditButton: false) {} dislikeAction: {}
+            ProfileCardView(user: user, isCurrentUser: true, showButtons: false, showEditButton: false) {} dislikeAction: {}
         }
         .padding(.horizontal, 10)
         .background(Color.white.ignoresSafeArea())

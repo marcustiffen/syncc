@@ -1,6 +1,7 @@
 import SwiftUI
 
 
+
 struct EditView: View {
     @EnvironmentObject var profileModel: ProfileModel
     @State private var isEditing = false
@@ -8,7 +9,8 @@ struct EditView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack(spacing: 10) {
-                
+                headerSection
+                    .padding(.top, 10)
                 
                 ScrollView(showsIndicators: false) {
                     PhotoSection()
@@ -17,6 +19,7 @@ struct EditView: View {
                     PhysicalInfoSection(profileModel: profileModel)
                     FitnessPreferencesSection(profileModel: profileModel, userManager: DBUserManager())
                 }
+                
             }
         }
         .padding(.horizontal, 10)
@@ -43,7 +46,7 @@ struct EditView: View {
     
     private var headerSection: some View {
         HStack {
-            Text("Edit")
+            Text("Edit Profile")
                 .h1Style()
             Spacer()
         }

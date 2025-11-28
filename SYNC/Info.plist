@@ -2,20 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>API_DELETE_USER_URL</key>
+	<string>$(API_DELETE_USER_URL)</string>
+	<key>API_SEND_LIKE_FREE_URL</key>
+	<string>$(API_SEND_LIKE_FREE_URL)</string>
+	<key>API_SEND_LIKE_URL</key>
+	<string>$(API_SEND_LIKE_URL)</string>
+	<key>API_SEND_NOTIFICATION_URL</key>
+	<string>$(API_SEND_NOTIFICATION_URL)</string>
+	<key>API_UNMATCH_USER_URL</key>
+	<string>$(API_UNMATCH_USER_URL)</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.marcustiffen.SYNC</string>
 	</array>
-	<key>API_DELETE_USER_URL</key>
-	<string>$(API_DELETE_USER_URL)</string>
-	<key>API_SEND_LIKE_URL</key>
-	<string>$(API_SEND_LIKE_URL)</string>
-	<key>API_UNMATCH_USER_URL</key>
-	<string>$(API_UNMATCH_USER_URL)</string>
-	<key>API_SEND_LIKE_FREE_URL</key>
-	<string>$(API_SEND_LIKE_FREE_URL)</string>
-	<key>API_SEND_NOTIFICATION_URL</key>
-	<string>$(API_SEND_NOTIFICATION_URL)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -39,6 +39,8 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>Request calendar access to add activity</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Bold.ttf</string>

@@ -223,28 +223,20 @@ class ActivityManager: ObservableObject {
             }
     }
     
-    /// Stops the real-time listener
+
     func stopListeningForActivities() {
         activitiesListener?.remove()
         activitiesListener = nil
     }
     
-    // MARK: - Helper: Get User's Match IDs
-    
-    /// Fetches all match IDs for a user
-    /// IMPORTANT: For better performance, consider storing matchedUserIds as an array field
-    /// on the user document instead of querying the matches subcollection
-    /// - Parameter userId: The user's ID
-    /// - Returns: Array of matched user IDs
+
     func fetchMatchedUserIds(userId: String) async throws -> [String] {
         let matchesCollection = db.collection("users").document(userId).collection("matches")
         let snapshot = try await matchesCollection.getDocuments()
         return snapshot.documents.map { $0.documentID }
     }
     
-    // MARK: - Reset Pagination
-    
-    /// Resets pagination state (useful when refreshing the feed)
+    // MARK: - Reset Pagination    
     func resetPagination() {
         lastDocument = nil
         hasMoreActivities = true
@@ -279,7 +271,12 @@ class ActivityManager: ObservableObject {
         }
         return activity
     }
+    
+    
 
+    func updateActivity(activity: Activity) async throws {
+        try activityDocument(id: activity.id).setData(from: activity, merge: true)
+    }
 }
 
 

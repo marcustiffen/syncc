@@ -9,7 +9,7 @@ struct LocationSection: View {
     var body: some View {
         HStack {
             Button(action: { showLocationEditView = true }) {
-                Text("Edit your Location")
+                Text("Location")
                     
                 Spacer()
                 Image(systemName: "chevron.down")

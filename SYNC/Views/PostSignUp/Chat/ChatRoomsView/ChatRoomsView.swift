@@ -15,16 +15,6 @@ struct ChatRoomsView: View {
             headerSection
                 .padding(.top, 50)
             
-//            ScrollView(.vertical) {
-//                ForEach(chatRoomsManager.chatRooms) { chatroom in
-//                    ChatRoomRowView(
-//                        chatroom: chatroom,
-//                        currentUserId: profileModel.user?.uid ?? ""
-//                    )
-//                    .environmentObject(profileModel)
-//                }
-//            }
-            
             ScrollView(.vertical) {
                 ForEach(chatRoomsManager.chatRooms) { chatroom in
                     ChatRoomRowView(
@@ -68,7 +58,7 @@ struct ChatRoomsView: View {
     
     private var headerSection: some View {
         HStack {
-            Text("Synccs")
+            Text("Chat")
                 .bold()
             
             Spacer()

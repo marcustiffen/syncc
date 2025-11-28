@@ -2,13 +2,18 @@ import FirebaseStorage
 import SDWebImageSwiftUI
 import SwiftUI
 
+
+
 struct ProfileCardView: View {
     @EnvironmentObject var profileModel: ProfileModel
     @EnvironmentObject var subscriptionModel: SubscriptionModel
     
     var user: DBUser?
     var isCurrentUser: Bool
+    var showButtons: Bool
+    var showEditButton: Bool
     
+
     var usersFirstName: String {
         return user?.name?.split(separator: " ").first.map(String.init) ?? ""
     }
@@ -19,14 +24,14 @@ struct ProfileCardView: View {
     @State private var isInitialized = false
     @State private var showEditSheet = false
     
-    var showEditButton: Bool
     
     var likeAction: () -> Void
     var dislikeAction: () -> Void
     
-    init(user: DBUser?, isCurrentUser: Bool, showEditButton: Bool, likeAction: @escaping () -> Void, dislikeAction: @escaping () -> Void) {
+    init(user: DBUser?, isCurrentUser: Bool, showButtons: Bool, showEditButton: Bool, likeAction: @escaping () -> Void, dislikeAction: @escaping () -> Void) {
         self.user = user
         self.isCurrentUser = isCurrentUser
+        self.showButtons = showButtons
         self.showEditButton = showEditButton
         self.likeAction = likeAction
         self.dislikeAction = dislikeAction
@@ -91,13 +96,8 @@ struct ProfileCardView: View {
                             workoutPreferencesSection()
                             fitnessGoalsSection()
                             
-                            if !isCurrentUser {
-                                Spacer()
-                                    .frame(height: 100)
-                            } else {
-                                Spacer()
-                                    .frame(height: 20)
-                            }
+                            Spacer()
+                                .frame(height: 500)
                         }
                         .padding(.horizontal, 20)
                         .padding(.top, 8)
@@ -134,17 +134,45 @@ struct ProfileCardView: View {
                 if showEditButton {
                     VStack {
                         HStack {
+//                            Button(action: {
+//
+//                            }) {
+//                                Image(systemName: "person.3")
+//                                    .font(.system(size: 20, weight: .semibold))
+//                                    .foregroundColor(.white)
+//                                    .padding(12)
+//                                    .background(Circle().fill(Color.syncGreen))
+//                            }
+//                            .padding(.trailing, 10)
+//                            .padding(.top, 10)
+                            
+                            NavigationLink {
+                                MySynccsView()
+                                    .environmentObject(profileModel)
+                            } label: {
+                                Image(systemName: "person.3")
+                                    .font(.system(size: 20, weight: .bold))
+                                    .foregroundColor(.black)
+                                    .padding(12)
+                                    .background(Circle().fill(Color.syncGreen))
+                            }
+                            .padding(.trailing, 10)
+                            .padding(.top, 10)
+                            
+                            
                             Spacer()
+                            
+                            
                             Button(action: {
                                 showEditSheet = true
                             }) {
                                 Image(systemName: "pencil")
-                                    .font(.system(size: 20, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .font(.system(size: 20, weight: .bold))
+                                    .foregroundColor(.black)
                                     .padding(12)
                                     .background(Circle().fill(Color.syncGreen))
                             }
-                            .padding(.trailing, 20)
+                            .padding(.trailing, 10)
                             .padding(.top, 10)
                         }
                         Spacer()
@@ -152,14 +180,14 @@ struct ProfileCardView: View {
                     .zIndex(5)
                 }
                 
-                if !isCurrentUser {
+                if showButtons {
                     actionButtons(screenHeight: screenHeight, screenWidth: screenWidth)
                         .zIndex(4)
                 }
             }
             .frame(maxHeight: screenHeight)
             .shadow(radius: 2)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
             .edgesIgnoringSafeArea(.all)
             .onAppear {
                 if !isInitialized {

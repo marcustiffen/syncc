@@ -1,3 +1,9 @@
+import SwiftUI
+import EventKit
+import MapKit
+
+
+
 struct MyActivityCardView: View {
     var activity: Activity
     

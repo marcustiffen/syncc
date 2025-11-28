@@ -9,7 +9,7 @@ struct EditProfileView: View {
     @Environment(\.dismiss) var dismiss
     
     @State private var selectedTab = 0
-    let tabs = ["View", "Activities"]
+    let tabs = ["View", "My Activities"]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -42,11 +42,9 @@ struct EditProfileView: View {
             .padding(.horizontal, 10)
             // Tab Content
             if selectedTab == 0 {
-                ProfileCardView(user: profileModel.user, isCurrentUser: true, showEditButton: true, likeAction: {}, dislikeAction: {})
+                ProfileCardView(user: profileModel.user, isCurrentUser: true, showButtons: false, showEditButton: true, likeAction: {}, dislikeAction: {})
                     .padding(.top, 10)
             } else if selectedTab == 1 {
-                //                EditView()
-                //                    .padding(.top, 10)
                 MyActivityView()
                     .environmentObject(profileModel)
             }

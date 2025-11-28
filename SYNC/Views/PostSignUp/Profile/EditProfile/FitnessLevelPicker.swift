@@ -7,19 +7,10 @@ struct FitnessLevelPicker: View {
     
     var body: some View {
         HStack(alignment: .bottom) {
-            Text("Edit Your Fitness Level")
-//                .bold()
+            Text("Fitness Level")
                 .h2Style()
+            
             Spacer()
-//            Picker("Fitness Level", selection: Binding(
-//                get: { profileModel.user?.fitnessLevel ?? fitnessLevels.first ?? "Any" },
-//                set: { profileModel.user?.fitnessLevel = $0 }
-//            )) {
-//                ForEach(fitnessLevels, id: \.self) { level in
-//                    Text(level).bodyTextStyle().tag(level)
-//                }
-//            }
-//            .accentColor(.syncBlack)
             
             Menu {
                 Picker(selection: Binding(
