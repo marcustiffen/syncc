@@ -8,6 +8,7 @@ struct Activity: Identifiable, Codable {
     var description: String?
     var location: DBLocation?
     var startTime: Date
+//    var endTime: Date
     var createdAt: Date
     var participants: [String]
     var nonParticipants: [String]?
@@ -19,13 +20,14 @@ struct Activity: Identifiable, Codable {
     var maxParticipants: Int?
     
     
-    init(id: String, creatorId: String, name: String, description: String? = nil, location: DBLocation? = nil, startTime: Date, createdAt: Date, participants: [String], nonParticipants: [String]? = nil, status: String, upvotes: Int? = nil, downvotes: Int? = nil, maxParticipants: Int? = nil) {
+    init(id: String, creatorId: String, name: String, description: String? = nil, location: DBLocation? = nil, startTime: Date, /*endTime: Date,*/ createdAt: Date, participants: [String], nonParticipants: [String]? = nil, status: String, upvotes: Int? = nil, downvotes: Int? = nil, maxParticipants: Int? = nil) {
         self.id = id
         self.creatorId = creatorId
         self.name = name
         self.description = description
         self.location = location
         self.startTime = startTime
+//        self.endTime = endTime
         self.createdAt = createdAt
         self.participants = participants
         self.nonParticipants = nonParticipants
@@ -43,6 +45,7 @@ struct Activity: Identifiable, Codable {
         case description
         case location
         case startTime
+//        case endTime
         case createdAt
         case participants
         case nonParticipants
@@ -61,6 +64,7 @@ struct Activity: Identifiable, Codable {
         self.description = try container.decodeIfPresent(String.self, forKey: .description)
         self.location = try container.decodeIfPresent(DBLocation.self, forKey: .location)
         self.startTime = try container.decode(Date.self, forKey: .startTime)
+//        self.endTime = try container.decode(Date.self, forKey: .endTime)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
         self.participants = try container.decode([String].self, forKey: .participants)
         self.nonParticipants = try container.decodeIfPresent([String].self, forKey: .nonParticipants)
@@ -79,6 +83,7 @@ struct Activity: Identifiable, Codable {
         try container.encodeIfPresent(self.description, forKey: .description)
         try container.encodeIfPresent(self.location, forKey: .location)
         try container.encodeIfPresent(self.startTime, forKey: .startTime)
+//        try container.encodeIfPresent(self.endTime, forKey: .endTime)
         try container.encode(self.createdAt, forKey: .createdAt)
         try container.encode(self.participants, forKey: .participants)
         try container.encodeIfPresent(self.nonParticipants, forKey: .nonParticipants)

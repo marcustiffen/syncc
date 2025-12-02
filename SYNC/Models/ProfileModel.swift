@@ -134,6 +134,33 @@ class ProfileModel: ObservableObject {
     }
     
     
+    func shouldResetLikes(lastResetDate: Date?) -> Bool {
+        guard let lastReset = lastResetDate else {
+            // If no reset date exists, we should reset
+            return true
+        }
+        
+        let twelveHoursInSeconds: TimeInterval = 12 * 60 * 60
+        let timeSinceLastReset = Date().timeIntervalSince(lastReset)
+        
+        return timeSinceLastReset >= twelveHoursInSeconds
+    }
+    
+    func resetDailyLikes(uid: String) async {
+//        do {
+//            let resetData: [String: Any] = [
+//                "dailyLikes": 10, // Reset to 10 likes
+//                "lastLikeReset": Date()
+//            ]
+//            try await DBUserManager.shared.userDocument(uid: uid).setData(resetData, merge: true)
+//            print("✅ Daily likes reset successfully for user: \(uid)")
+//        } catch {
+//            print("❌ Error resetting daily likes: \(error.localizedDescription)")
+//        }
+        await DBUserManager.shared.resetDailyLikesForUser(uid: uid)
+    }
+    
+    
     func signOut() throws {
         removeListener()
 //        CompleteUsersModel().removeAllListeners()

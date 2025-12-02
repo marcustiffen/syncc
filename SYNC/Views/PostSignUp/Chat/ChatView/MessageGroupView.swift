@@ -1,3 +1,6 @@
+import SwiftUI
+
+
 struct MessageGroupView: View {
     let group: MessageGroup
     let currentUserId: String

@@ -3,142 +3,108 @@
 //import Foundation
 //import FirebaseFirestore
 //
-//
-//
 //class DiscoverViewModel: ObservableObject {
-//    @Published var cardQueue: [DBUser] = []
+//    @Published var userQueue: [DBUser] = []
 //    @Published var isLoading = false
-//    @Published var isAnimating = false
-//    @Published var showLikeIndicator = false
+//    @Published var isPaginating = false
 //    @Published var showPayWall = false
 //    @Published var errorMessage: String?
 //    
-//    // Track if this is the first load vs background fetching
-//    @Published var isFirstLoad = true
-//    @Published var isBackgroundFetching = false
-//    @Published var animatedCardIds: Set<String> = []
-//    
-//    // Add flag to prevent redundant filter checks
-//    private var hasInitialized = false
-//
 //    private let usersManager = UsersManager()
 //    private let matchMakingManager = MatchMakingManager()
-//    private var lastActionTime: Date = .distantPast
-//    private let debounceInterval: TimeInterval = 0.25
 //    private var lastFilterHash: Int = 0
 //    private var currentUser: DBUser?
-//    private var isPaginating = false
-//
+//    private var hasInitialized = false
+//    
+//    // Pagination threshold - load more when user scrolls to this many items from the end
+//    private let paginationThreshold = 6
+//    
+//    // MARK: - Initial Load
+//    
 //    func loadInitialUsers(for user: DBUser) {
 //        currentUser = user
 //        lastFilterHash = calculateFilterHash(for: user)
-//        cardQueue = []
-//        isFirstLoad = true
-//        isBackgroundFetching = false
-//        animatedCardIds.removeAll()
+//        userQueue = []
 //        usersManager.resetPagination()
 //        hasInitialized = true
-//        fetchNextPage(reset: true, isInitialLoad: true)
+//        fetchNextPage(for: user, isInitialLoad: true)
 //    }
-//
-//    func fetchNextPage(reset: Bool = false, isInitialLoad: Bool = false) {
-//        guard let user = currentUser, !isPaginating else { return }
+//    
+//    // MARK: - Fetch Users
+//    
+//    func fetchNextPage(for user: DBUser, isInitialLoad: Bool) {
+//        guard !isPaginating else {
+//            print("Already paginating, skipping fetch")
+//            return
+//        }
+//        
 //        isPaginating = true
 //        
-//        // Only show loading screen for initial load, not background fetches
+//        // Only show loading spinner on initial load
 //        if isInitialLoad {
 //            isLoading = true
 //        }
 //        
-//        // Set background fetching flag for animation control
-//        if !isInitialLoad {
-//            isBackgroundFetching = true
-//        }
+//        // Fetch size: 20 for initial load, 10 for pagination
+//        let fetchSize = isInitialLoad ? 20 : 10
 //        
-//        // Determine fetch size based on context
-//        let fetchSize: Int
-//        if isInitialLoad {
-//            fetchSize = 10 // Initial load: fetch up to 10 users
-//        } else {
-//            fetchSize = 7 // Background refetch: fetch exactly 7 users
-//        }
-//        
-//        usersManager.fetchUsers(for: user, pageSize: fetchSize, reset: reset) { [weak self] result in
+//        usersManager.fetchUsers(for: user, pageSize: fetchSize, reset: isInitialLoad) { [weak self] result in
 //            DispatchQueue.main.async {
 //                self?.isLoading = false
 //                self?.isPaginating = false
+//                
 //                switch result {
 //                case .success(let users):
-//                    let newUsers = users.filter { newUser in
-//                        !(self?.cardQueue.contains { $0.uid == newUser.uid } ?? false)
-//                    }
-//                    if reset {
-//                        self?.cardQueue = newUsers
+//                    print("✅ Fetched \(users.count) users (initial: \(isInitialLoad))")
+//                    
+//                    if isInitialLoad {
+//                        self?.userQueue = users
 //                    } else {
-//                        self?.cardQueue.append(contentsOf: newUsers)
+//                        // Filter out duplicates
+//                        let newUsers = users.filter { newUser in
+//                            !(self?.userQueue.contains { $0.uid == newUser.uid } ?? false)
+//                        }
+//                        self?.userQueue.append(contentsOf: newUsers)
+//                        print("✅ Added \(newUsers.count) new users to queue")
 //                    }
 //                    
-//                    // Mark first load as complete after first successful fetch
-//                    if self?.isFirstLoad == true {
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                            self?.isFirstLoad = false
-//                        }
-//                    }
-//                    
-//                    // Reset background fetching flag after a short delay
-//                    if self?.isBackgroundFetching == true {
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                            self?.isBackgroundFetching = false
-//                        }
-//                    }
 //                case .failure(let error):
 //                    self?.errorMessage = error.localizedDescription
-//                    self?.isBackgroundFetching = false
+//                    print("❌ Error fetching users: \(error)")
 //                }
 //            }
 //        }
 //    }
-//
-//    func performCardAction(isLike: Bool, user: DBUser, currentUser: DBUser, isSubscriptionActive: Bool) {
-//        guard !isAnimating else { return }
-//        let now = Date()
-//        guard now.timeIntervalSince(lastActionTime) > debounceInterval else { return }
-//        lastActionTime = now
+//    
+//    // MARK: - Pagination Logic
+//    
+//    func shouldLoadMore(currentUser: DBUser) -> Bool {
+//        guard let index = userQueue.firstIndex(where: { $0.uid == currentUser.uid }) else {
+//            return false
+//        }
 //        
-//        if isLike && !isSubscriptionActive && currentUser.dailyLikes! < 0  {
+//        // Load more when we're within paginationThreshold items from the end
+//        let shouldLoad = index >= userQueue.count - paginationThreshold
+//        
+//        if shouldLoad && !isPaginating {
+//            print("📊 Should load more: index \(index) of \(userQueue.count)")
+//        }
+//        
+//        return shouldLoad && !isPaginating
+//    }
+//    
+//    
+//    func performLike(user: DBUser, currentUser: DBUser, isSubscriptionActive: Bool) {
+//        // Check daily like limit
+//        if !isSubscriptionActive && (currentUser.dailyLikes ?? 0) < 0 {
 //            showPayWall = true
 //            return
 //        }
 //        
-//        isAnimating = true
-//        if isLike {
-//            sendLike(currentUser: currentUser, user: user, isSubscriptionActive: isSubscriptionActive)
-//        } else {
-//            sendDislike(currentUser: currentUser, user: user)
-//        }
+//        // Remove from queue immediately for better UX
+//        userQueue.removeAll { $0.uid == user.uid }
 //        
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-//            self.advanceQueue()
-//            self.isAnimating = false
-//        }
-//    }
-//
-//    private func advanceQueue() {
-//        if !cardQueue.isEmpty {
-//            let removedUser = cardQueue.removeFirst()
-//            cardQueue.removeAll { $0.uid == removedUser.uid }
-//            
-//            // Remove from animated cards set
-//            animatedCardIds.remove(removedUser.uid)
-//            
-//            // Fetch more users when count drops to 3 (this is a background fetch)
-//            if cardQueue.count <= 3 {
-//                fetchNextPage(isInitialLoad: false)
-//            }
-//        }
-//    }
-//
-//    private func sendLike(currentUser: DBUser, user: DBUser, isSubscriptionActive: Bool) {
+//        // Send like asynchronously
 //        Task.detached { [weak self] in
 //            await withCheckedContinuation { continuation in
 //                self?.matchMakingManager.sendLike(
@@ -149,8 +115,12 @@
 //            }
 //        }
 //    }
-//
-//    private func sendDislike(currentUser: DBUser, user: DBUser) {
+//    
+//    func performDislike(user: DBUser, currentUser: DBUser) {
+//        // Remove from queue immediately
+//        userQueue.removeAll { $0.uid == user.uid }
+//        
+//        // Send dislike asynchronously
 //        Task { [weak self] in
 //            await self?.matchMakingManager.dismissUser(
 //                currentUserId: currentUser.uid,
@@ -158,7 +128,9 @@
 //            )
 //        }
 //    }
-//
+//    
+//    // MARK: - Filter Management
+//    
 //    func checkFiltersAndReloadIfNeeded(for user: DBUser) {
 //        guard hasInitialized else {
 //            print("Not initialized yet, skipping filter check")
@@ -167,21 +139,18 @@
 //        
 //        let newFilterHash = calculateFilterHash(for: user)
 //        if newFilterHash != lastFilterHash {
-//            print("Filters changed, reloading users")
+//            print("🔄 Filters changed, reloading users")
 //            loadInitialUsers(for: user)
 //        } else {
-//            print("Filters unchanged, maintaining queue")
-//            checkAndMaintainCardCount()
+//            print("✓ Filters unchanged")
 //        }
 //    }
-//
-//    func filtersDidChange(for user: DBUser) {
-//        let newFilterHash = calculateFilterHash(for: user)
-//        if newFilterHash != lastFilterHash {
-//            loadInitialUsers(for: user)
-//        }
+//    
+//    func refreshUsers(for user: DBUser) {
+//        print("🔄 Refreshing users...")
+//        loadInitialUsers(for: user)
 //    }
-//
+//    
 //    private func calculateFilterHash(for user: DBUser) -> Int {
 //        var hasher = Hasher()
 //        hasher.combine(user.filteredSex)
@@ -193,18 +162,6 @@
 //        hasher.combine(user.filteredFitnessGoals)
 //        hasher.combine(user.blockedSex)
 //        return hasher.finalize()
-//    }
-//    
-//    func checkAndMaintainCardCount() {
-//        if cardQueue.count <= 3 {
-//            fetchNextPage(isInitialLoad: false)
-//        }
-//    }
-//    
-//    func resetAnimationState() {
-//        isFirstLoad = true
-//        isBackgroundFetching = false
-//        animatedCardIds.removeAll()
 //    }
 //}
 
@@ -306,12 +263,12 @@ class DiscoverViewModel: ObservableObject {
         return shouldLoad && !isPaginating
     }
     
-    // MARK: - Actions
     
-    func performLike(user: DBUser, currentUser: DBUser, isSubscriptionActive: Bool) {
+    func performLike(user: DBUser, currentUser: DBUser, isSubscriptionActive: Bool, completion: @escaping (Bool) -> Void) {
         // Check daily like limit
-        if !isSubscriptionActive && (currentUser.dailyLikes ?? 0) < 0 {
+        if !isSubscriptionActive && (currentUser.dailyLikes ?? 0) <= 0 {
             showPayWall = true
+            completion(false) // Like was NOT successful
             return
         }
         
@@ -325,7 +282,14 @@ class DiscoverViewModel: ObservableObject {
                     currentUserId: currentUser.uid,
                     likedUserId: user.uid,
                     isSubscriptionActive: isSubscriptionActive
-                ) { _ in continuation.resume() }
+                ) { _ in
+                    continuation.resume()
+                }
+            }
+            
+            // Call completion on main thread after like is sent
+            await MainActor.run {
+                completion(true) // Like was successful
             }
         }
     }

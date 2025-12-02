@@ -8,10 +8,8 @@ struct CompleteSignUpView: View {
     @EnvironmentObject var signUpModel: SignUpModel
     @EnvironmentObject var profileModel: ProfileModel
     @EnvironmentObject var chatRoomsManager: ChatRoomsManager
-//    @EnvironmentObject var completeUsersModel: CompleteUsersModel
     
     @State var completedLoading: Bool = false
-//    @State private var signUpLoading: Bool = false
     
     @State private var finalLoading = false
     

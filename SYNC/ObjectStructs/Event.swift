@@ -1,9 +1,4 @@
-//
-//  Event.swift
-//  SYNC
-//
-//  Created by Marcus Tiffen (CODING) on 01/12/2025.
-//
+import Foundation
 
 
 struct Event: Identifiable {

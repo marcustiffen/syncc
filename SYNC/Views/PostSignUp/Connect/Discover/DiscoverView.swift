@@ -191,6 +191,8 @@ import SwiftUI
 
 
 struct DiscoverView: View {
+    @Environment(\.dismiss) var dismiss
+    
     @EnvironmentObject var profileModel: ProfileModel
     @EnvironmentObject var subscriptionModel: SubscriptionModel
     @EnvironmentObject var likesReceivedViewModel: LikesReceivedViewModel
@@ -215,7 +217,7 @@ struct DiscoverView: View {
                 Spacer()
                 LoadingView(
                     isLoading: $viewModel.isLoading,
-                    loadingViewFinishedLoading: $loadingViewFinishedLoading,
+                    loadingViewFinishedLoading: .constant(false),
                     loadingMessage: .constant("")
                 )
                 Spacer()
@@ -329,23 +331,30 @@ struct DiscoverView: View {
         .padding()
     }
     
-    // MARK: - Actions
     
     private func handleLike(user: DBUser) {
         guard let currentUser = profileModel.user else { return }
         
-        viewModel.performLike(
-            user: user,
-            currentUser: currentUser,
-            isSubscriptionActive: subscriptionModel.isSubscriptionActive
-        )
         
-        // Send notification
-        if likesReceivedViewModel.likesReceived.contains(where: { $0.userId == user.uid }) {
-            sendMatchNotification(to: user, from: currentUser)
-        } else {
-            sendLikeNotification(to: user, from: currentUser)
+        viewModel.performLike(user: user, currentUser: currentUser, isSubscriptionActive: subscriptionModel.isSubscriptionActive) { result in
+            switch result {
+            case true:
+                // Send notification
+                if likesReceivedViewModel.likesReceived.contains(where: { $0.userId == user.uid }) {
+                    sendMatchNotification(to: user, from: currentUser)
+                } else {
+                    sendLikeNotification(to: user, from: currentUser)
+                }
+                print("Successfully liked user")
+            case false:
+                viewModel.showPayWall = true
+                print("Failed to like user")
+            }
         }
+        
+
+        
+//        dismiss()
         
         showUserDetail = false
     }
@@ -357,6 +366,8 @@ struct DiscoverView: View {
             user: user,
             currentUser: currentUser
         )
+        
+//        dismiss()
         
         showUserDetail = false
     }

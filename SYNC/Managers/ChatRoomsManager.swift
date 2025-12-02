@@ -417,6 +417,7 @@ class ChatRoomsManager: ObservableObject {
             }
     }
     
+    
     private func createMessagesManagers(for chatRooms: [ChatRoom], userId: String) {
         let currentChatRoomIds = Set(chatRooms.map { $0.id })
         let existingChatRoomIds = Set(messagesManagers.keys)

@@ -32,15 +32,7 @@ struct MessageFieldView: View {
             
             if !messageText.isEmpty {
                 Button {
-//                    let user = profileModel.user!
-//                    let sendersMessages = messages.filter{ $0.senderId == user.uid }
-//                    let sendersMessagesCount = sendersMessages.count
-                    
-//                    if subscriptionsModel.isSubscriptionActive == false && sendersMessagesCount > 15 {
-//                        showPayWallView = true
-//                    } else {
-                        sendMessage()
-//                    }
+                    sendMessage()
                 } label: {
                     Image(systemName: "paperplane.fill")
                         .foregroundColor(.white)

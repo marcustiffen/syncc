@@ -47,7 +47,6 @@ struct ChatRoom: Identifiable, Codable {
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
     }
     
-    
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.id, forKey: .id)
@@ -55,4 +54,31 @@ struct ChatRoom: Identifiable, Codable {
         try container.encode(self.users, forKey: .users)
         try container.encode(self.createdAt, forKey: .createdAt)
     }
+    
+//    init(from decoder: any Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.id = try container.decode(String.self, forKey: .id)
+//        self.name = try container.decode(String.self, forKey: .name)
+//        self.users = try container.decode([String].self, forKey: .users)
+//        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+//        
+//        // Decode optional fields
+//        self.lastMessageAt = try container.decodeIfPresent(Date.self, forKey: .lastMessageAt)
+//        self.lastMessageText = try container.decodeIfPresent(String.self, forKey: .lastMessageText)
+//        self.lastMessageSenderId = try container.decodeIfPresent(String.self, forKey: .lastMessageSenderId)
+//        self.lastMessageSeenBy = try container.decodeIfPresent([String].self, forKey: .lastMessageSeenBy)
+//    }
+    
+//    
+//    func encode(to encoder: any Encoder) throws {
+//        var container = encoder.container(keyedBy: CodingKeys.self)
+//        try container.encode(self.id, forKey: .id)
+//        try container.encode(self.name, forKey: .name)
+//        try container.encode(self.users, forKey: .users)
+//        try container.encodeIfPresent(self.lastMessageAt, forKey: .lastMessageAt)
+//        try container.encodeIfPresent(self.lastMessageText, forKey: .lastMessageText)
+//        try container.encodeIfPresent(self.lastMessageSenderId, forKey: .lastMessageSenderId)
+//        try container.encodeIfPresent(self.lastMessageSeenBy, forKey: .lastMessageSeenBy)
+//        
+//    }
 }

@@ -222,6 +222,7 @@ async function initiateMatch(userAId, userBId) {
       name: chatRoomRef.id,
       users: [userAId, userBId],
       createdAt: timestamp,
+      lastMessageAt: timestamp,
     });
   });
 

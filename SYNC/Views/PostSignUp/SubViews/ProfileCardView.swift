@@ -5,6 +5,7 @@ import SwiftUI
 
 
 struct ProfileCardView: View {
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var profileModel: ProfileModel
     @EnvironmentObject var subscriptionModel: SubscriptionModel
     
@@ -328,9 +329,11 @@ struct ProfileCardView: View {
                 Spacer()
                 DislikeButton(user: user!) {
                     dislikeAction()
+                    dismiss()
                 }
                 LikeButton(user: user!) {
                     likeAction()
+                    dismiss()
                 }
                 Spacer()
             }

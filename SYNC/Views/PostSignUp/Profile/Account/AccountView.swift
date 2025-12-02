@@ -26,7 +26,7 @@ struct AccountView: View {
             profileOptionsSection
         }
         .sheet(isPresented: $isPresentPrivacyPolicy) {
-            WebView(url: URL(string: "https://www.freeprivacypolicy.com/live/eb4dff28-4b8f-49aa-8154-179310a1ec20")!)
+            WebView(url: URL(string: "https://www.syncc.com.au/privacy")!)
         }
         .sheet(isPresented: $isPresentEULA) {
             WebView(url: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
@@ -84,7 +84,7 @@ struct AccountView: View {
                     color: .blue,
                     action: {
                         Purchases.shared.restorePurchases { (customerInfo, error) in
-                            subscriptionModel.isSubscriptionActive = customerInfo?.entitlements.all["pro"]?.isActive == true
+                            subscriptionModel.isSubscriptionActive = customerInfo?.entitlements.all["Premium"]?.isActive == true
                         }
                     }
                 )

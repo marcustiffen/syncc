@@ -71,7 +71,6 @@ struct EditProfileView: View {
         }
         .h1Style()
         .foregroundStyle(.syncBlack)
-        .padding(.horizontal, 10)
         .padding(.bottom, 16)
     }
 }

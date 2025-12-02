@@ -10,6 +10,9 @@ struct LocationView: View {
     @Binding var loadingViewFinishedLoading: Bool
     @EnvironmentObject var signUpModel: SignUpModel
     
+    
+    @StateObject private var locationManager = LocationManager()
+    
     var body: some View {
         VStack(spacing: 20) {
             HStack {
@@ -62,9 +65,37 @@ struct LocationView: View {
                 }
             }
         }
-        
         .navigationBarBackButtonHidden(true)
         .onBoardingBackground()
+        .onAppear {
+            getCurrentLocation()
+        }
+    }
+    
+    func getCurrentLocation() {
+        locationManager.requestLocation()
+    }
+    
+    func updateLocationFromCoordinates(_ coordinate: CLLocationCoordinate2D) {
+        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        
+        let geocoder = CLGeocoder()
+        
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            if let error = error {
+                print("Reverse geocoding error: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let placemark = placemarks?.first else { return }
+            
+            let locationName = placemark.name ?? placemark.locality ?? "Current Location"
+            
+            signUpModel.location = DBLocation(
+                name: locationName,
+                location: coordinate
+            )
+        }
     }
 }
 

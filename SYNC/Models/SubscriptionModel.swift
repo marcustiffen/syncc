@@ -5,7 +5,7 @@ import RevenueCat
 class SubscriptionModel: ObservableObject {
     @Published var isSubscriptionActive = false
     @Published var subscriptionDetails: String = "No active subscription"
-        
+    
     
     init() {
         checkSubscriptionStatus()

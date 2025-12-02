@@ -29,4 +29,9 @@ extension View {
     func shimmer() -> some View {
         self.modifier(ShimmerEffect())
     }
+    
+    func dismissKeyboard() {
+        print("dismissing keyboard")
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }

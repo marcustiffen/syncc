@@ -95,31 +95,31 @@ struct ActivityFilterBar: View {
     var body: some View {
         VStack(spacing: 12) {
             // Search bar
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.secondary)
-                
-                TextField("Search activities...", text: $searchText)
-                    .textFieldStyle(.plain)
-                    .autocorrectionDisabled()
-                    .onChange(of: searchText) { oldValue, newValue in
-                        // ✅ FIXED: Update view model immediately
-                        viewModel.updateSearchText(newValue)
-                    }
-                
-                if !searchText.isEmpty {
-                    Button {
-                        searchText = ""
-                        viewModel.updateSearchText("")
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-            .padding(10)
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
+//            HStack {
+//                Image(systemName: "magnifyingglass")
+//                    .foregroundColor(.secondary)
+//                
+//                TextField("Search activities...", text: $searchText)
+//                    .textFieldStyle(.plain)
+//                    .autocorrectionDisabled()
+//                    .onChange(of: searchText) { oldValue, newValue in
+//                        // ✅ FIXED: Update view model immediately
+//                        viewModel.updateSearchText(newValue)
+//                    }
+//                
+//                if !searchText.isEmpty {
+//                    Button {
+//                        searchText = ""
+//                        viewModel.updateSearchText("")
+//                    } label: {
+//                        Image(systemName: "xmark.circle.fill")
+//                            .foregroundColor(.secondary)
+//                    }
+//                }
+//            }
+//            .padding(10)
+//            .background(Color(.systemGray6))
+//            .cornerRadius(10)
             
             // Active filter indicator
             if viewModel.filter.isActive {

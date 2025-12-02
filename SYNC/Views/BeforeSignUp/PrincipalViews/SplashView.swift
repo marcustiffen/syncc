@@ -75,6 +75,11 @@ struct SplashView: View {
                     likesReceivedViewModel.addListenerForLikesReceived(for: user.uid)
                     showCreateOrSignInView = false
                     loadingViewFinishedLoading = true
+                    
+                    if profileModel.shouldResetLikes(lastResetDate: user.lastLikeReset) {
+                        await profileModel.resetDailyLikes(uid: user.uid)
+                    }
+                    
                     if subscriptionModel.isSubscriptionActive == false {
                         await profileModel.resetNonAdmin(uid: user.uid)
                         print("User has no active sub - resetting status")
@@ -84,6 +89,7 @@ struct SplashView: View {
                     showCreateOrSignInView = true
                     loadingViewFinishedLoading = false
                 }
+                
             } else {
                 showCreateOrSignInView = true
                 loadingViewFinishedLoading = false

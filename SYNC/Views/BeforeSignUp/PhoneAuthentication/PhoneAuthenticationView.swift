@@ -142,7 +142,7 @@ struct PhoneAuthenticationView: View {
                                         await signUpModel.saveProgress(uid: currentUser.uid, key: "uid", value: currentUser.uid, onboardingStep: .email)
                                         await signUpModel.saveProgress(uid: currentUser.uid, key: "phoneNumber", value: phoneAuthViewModel.mobileZoneCode + phoneAuthViewModel.txtMobile, onboardingStep: nil)
                                         await signUpModel.saveProgress(uid: signUpModel.uid!, key: "isBanned", value: false, onboardingStep: nil)
-                                        await signUpModel.saveProgress(uid: signUpModel.uid!, key: "dailyLikes", value: 3, onboardingStep: nil)
+                                        await signUpModel.saveProgress(uid: signUpModel.uid!, key: "dailyLikes", value: 5, onboardingStep: nil)
                                         await signUpModel.saveProgress(uid: signUpModel.uid!, key: "lastLikeReset", value: Date(), onboardingStep: nil)
                                     }
                                 }

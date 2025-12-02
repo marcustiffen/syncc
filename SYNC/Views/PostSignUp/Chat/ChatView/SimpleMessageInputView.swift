@@ -1,3 +1,6 @@
+import SwiftUI
+
+
 struct SimpleMessageInputView: View {
     let chatRoomId: String
     let messageReceiver: DBUser

@@ -4,8 +4,12 @@
 <dict>
 	<key>API_DELETE_USER_URL</key>
 	<string>$(API_DELETE_USER_URL)</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to help you create activities near you</string>
 	<key>API_SEND_LIKE_FREE_URL</key>
 	<string>$(API_SEND_LIKE_FREE_URL)</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need your location to help you create activities near you.</string>
 	<key>API_SEND_LIKE_URL</key>
 	<string>$(API_SEND_LIKE_URL)</string>
 	<key>API_SEND_NOTIFICATION_URL</key>
@@ -41,6 +45,8 @@
 	<false/>
 	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
 	<string>Request calendar access to add activity</string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Bold.ttf</string>

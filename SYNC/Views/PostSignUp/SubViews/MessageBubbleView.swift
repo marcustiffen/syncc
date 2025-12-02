@@ -1,19 +1,18 @@
-//import SwiftUI
-//
-//
+import SwiftUI
+
 //struct MessageBubbleView: View {
 //    let message: Message
 //    let isLastMessage: Bool
+//    let isLastInSequence: Bool // NEW: Determines if this is the last message from this sender in a consecutive block
 //    
 //    @State private var user: DBUser? = nil
-//    
 //    @State private var showTime = false
 //    @EnvironmentObject private var profileModel: ProfileModel
 //    
 //    var body: some View {
 //        VStack(alignment: message.senderId == profileModel.user?.uid ? .trailing : .leading, spacing: 0) {
 //            
-//            HStack(alignment: .bottom) {
+//            HStack(alignment: .bottom, spacing: 5) {
 //                if message.senderId == profileModel.user?.uid {
 //                    Spacer()
 //                }
@@ -44,18 +43,22 @@
 //                    Spacer()
 //                }
 //            }
-//            .padding(message.senderId == profileModel.user?.uid ? .trailing : .leading, 10)
+//            .padding(message.senderId == profileModel.user?.uid ? .trailing : .leading, message.senderId == profileModel.user?.uid ? 0 : 10)
 //            .frame(maxWidth: 300, alignment: message.senderId == profileModel.user?.uid ? .trailing : .leading)
 //            
-//            if let image = user?.images?.first {
-//                ImageLoaderView(urlString: image.url)
-//                    .scaledToFit()
-//                    .clipShape(Circle())
-//                    .frame(width: 20, height: 20)
-//            } else {
-//                Circle()
-//                    .foregroundStyle(.gray)
-//                    .frame(width: 20, height: 20)
+//            // Show avatar only if this is the last message in sequence AND not from current user
+//            if isLastInSequence && message.senderId != profileModel.user?.uid {
+//                // Avatar on the left for received messages
+//                if let image = user?.images?.first {
+//                    ImageLoaderView(urlString: image.url)
+//                        .scaledToFill()
+//                        .clipShape(Circle())
+//                        .frame(width: 20, height: 20)
+//                } else {
+//                    Circle()
+//                        .foregroundStyle(.gray)
+//                        .frame(width: 20, height: 20)
+//                }
 //            }
 //            
 //            // Status and Timestamp
@@ -94,127 +97,95 @@
 //        .padding(.vertical, 3)
 //    }
 //}
-//
-//
-//
-//
-////struct MessageBubbleView_Previews: PreviewProvider {
-////    static var previews: some View {
-////        
-////        // Mock ProfileModel so EnvironmentObject works
-////        let profileModel = ProfileModel()
-////        profileModel.user = DBUser(onboardingStep: .complete, deviceToken: "", uid: "", phoneNumber: "", email: "", name: "", dateOfBirth: Date(), sex: "", location: DBLocation.init(), bio: "", fitnessTypes: [], fitnessGoals: [], fitnessLevel: "", height: 0, weight: 0.0, images: [], filteredAgeRange: CustomRange(min: 0, max: 0), filteredSex: "", filteredMatchRadius: 0.0, filteredFitnessTypes: [], filteredFitnessGoals: [], filteredFitnessLevel: "", blockedSex: "", isBanned: false, dailyLikes: 0, lastLikeReset: Date())
-////        
-////        return VStack(spacing: 20) {
-////            MessageBubbleView(
-////                message: Message(id: "", text: "This is a dummy message", senderId: "", timestamp: Date(), seen: false),
-////                isLastMessage: false
-////            )
-////            .environmentObject(profileModel)
-////        }
-////        .padding()
-////        .previewLayout(.sizeThatFits)
-////    }
-////}
 
-
-
-import SwiftUI
 
 struct MessageBubbleView: View {
     let message: Message
     let isLastMessage: Bool
-    let isLastInSequence: Bool // NEW: Determines if this is the last message from this sender in a consecutive block
+    let isLastInSequence: Bool
+    let user: DBUser?
     
-    @State private var user: DBUser? = nil
     @State private var showTime = false
     @EnvironmentObject private var profileModel: ProfileModel
     
+    var isFromCurrentUser: Bool {
+        message.senderId == profileModel.user?.uid
+    }
+    
     var body: some View {
-        VStack(alignment: message.senderId == profileModel.user?.uid ? .trailing : .leading, spacing: 0) {
-            
-            HStack(alignment: .bottom, spacing: 5) {
-                if message.senderId == profileModel.user?.uid {
-                    Spacer()
+        VStack(alignment: isFromCurrentUser ? .trailing : .leading, spacing: 4) {
+            HStack(alignment: .bottom, spacing: 6) {
+                if isFromCurrentUser {
+                    Spacer(minLength: 60)
                 }
                 
+                // Avatar (only for received messages, only on last in sequence)
+                if !isFromCurrentUser && isLastInSequence {
+                    if let image = user?.images?.first {
+                        ImageLoaderView(urlString: image.url)
+                            .scaledToFill()
+                            .frame(width: 24, height: 24)
+                            .clipShape(Circle())
+                    } else {
+                        Circle()
+                            .foregroundStyle(.gray.opacity(0.3))
+                            .frame(width: 24, height: 24)
+                    }
+                } else if !isFromCurrentUser {
+                    // Spacer to maintain alignment
+                    Color.clear.frame(width: 24, height: 24)
+                }
+                
+                // Message Bubble
                 Text(message.text)
                     .bodyTextStyle()
-                    .padding(.horizontal, 15)
-                    .padding(.vertical, 10)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
                     .background(
-                        message.senderId == profileModel.user?.uid
+                        isFromCurrentUser
                         ? Color.syncGreen.opacity(0.9)
                         : Color.syncGrey
                     )
                     .foregroundColor(
-                        message.senderId == profileModel.user?.uid
+                        isFromCurrentUser
                         ? Color.black
                         : Color.white
                     )
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    .shadow(color: .black.opacity(0.2), radius: 4, x: 2, y: 2)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .onTapGesture {
-                        withAnimation(.easeInOut) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
                             showTime.toggle()
                         }
                     }
                 
-                if message.senderId != profileModel.user?.uid {
-                    Spacer()
-                }
-            }
-            .padding(message.senderId == profileModel.user?.uid ? .trailing : .leading, message.senderId == profileModel.user?.uid ? 0 : 10)
-            .frame(maxWidth: 300, alignment: message.senderId == profileModel.user?.uid ? .trailing : .leading)
-            
-            // Show avatar only if this is the last message in sequence AND not from current user
-            if isLastInSequence && message.senderId != profileModel.user?.uid {
-                // Avatar on the left for received messages
-                if let image = user?.images?.first {
-                    ImageLoaderView(urlString: image.url)
-                        .scaledToFill()
-                        .clipShape(Circle())
-                        .frame(width: 20, height: 20)
-                } else {
-                    Circle()
-                        .foregroundStyle(.gray)
-                        .frame(width: 20, height: 20)
+                if !isFromCurrentUser {
+                    Spacer(minLength: 60)
                 }
             }
             
-            // Status and Timestamp
-            if isLastMessage && message.senderId == profileModel.user?.uid {
+            // Timestamp
+            if showTime {
+                HStack {
+                    if isFromCurrentUser { Spacer() }
+                    Text(message.timestamp.formatted(.dateTime.hour().minute()))
+                        .font(.caption2)
+                        .foregroundColor(.gray)
+                    if !isFromCurrentUser { Spacer() }
+                }
+                .padding(.horizontal, !isFromCurrentUser && isLastInSequence ? 30 : 0)
+                .transition(.opacity)
+            }
+            
+            // Status (only for last message from current user)
+            if isLastMessage && isFromCurrentUser {
                 HStack {
                     Spacer()
                     Text(message.seen ? "Seen" : "Delivered")
-                        .bodyTextStyle()
+                        .font(.caption2)
                         .foregroundStyle(.gray)
-                        .padding(.top, 5)
                 }
-            } else if showTime {
-                HStack {
-                    if message.senderId == profileModel.user?.uid {
-                        Spacer()
-                    }
-                    
-                    Text(message.timestamp.formatted(.dateTime.hour().minute()))
-                        .bodyTextStyle()
-                        .foregroundColor(.gray)
-                        .padding(.top, 5)
-                    
-                    if message.senderId != profileModel.user?.uid {
-                        Spacer()
-                    }
-                }
+                .transition(.opacity)
             }
         }
-        .onAppear {
-            Task {
-                self.user = try await DBUserManager.shared.getUser(uid: message.senderId)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: message.senderId == profileModel.user?.uid ? .trailing : .leading)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 3)
     }
 }

@@ -10,19 +10,33 @@ struct EmptyFilterResultsView: View {
                 .font(.system(size: 60))
                 .foregroundColor(.secondary)
             
-            Text("No activities found")
-                .font(.title2)
+            Text("No upcoming activities found")
+                .font(.h1)
                 .fontWeight(.semibold)
+                .multilineTextAlignment(.center)
             
-            Text("Try adjusting your filters to see more activities")
-                .font(.body)
+            Text("Try adjusting your filters to see more activities or find more connections!")
+                .font(.h2)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
             
-            Button("Clear Filters") {
+//            Button("Clear Filters") {
+//                onClearFilters()
+//            }
+//            .buttonStyle(.borderedProminent)
+            
+            Button {
                 onClearFilters()
+            } label: {
+                Text("Clear Filters")
+                    .padding(5)
+                    .foregroundStyle(.white)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(Color.red)
+                    )
             }
-            .buttonStyle(.borderedProminent)
+
         }
         .padding()
     }

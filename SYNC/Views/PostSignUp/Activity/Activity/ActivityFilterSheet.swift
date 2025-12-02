@@ -191,7 +191,12 @@ struct ActivityFilterSheet: View {
             Spacer()
             
             Button {
-                dismiss()
+//                Task {
+                    applyFilters()
+                    
+                    dismiss()
+//                }
+                
             } label: {
                 Text("Apply")
                     .font(.h2)

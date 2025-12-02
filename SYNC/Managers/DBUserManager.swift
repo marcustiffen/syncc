@@ -161,6 +161,20 @@ class DBUserManager: ObservableObject {
     }
     
     
+    func resetDailyLikesForUser(uid: String) async {
+        do {
+            let resetData: [String: Any] = [
+                "dailyLikes": 3, // Reset to 10 likes
+                "lastLikeReset": Date()
+            ]
+            try await userDocument(uid: uid).setData(
+                resetData, merge: true)
+        } catch {
+            print("Error fetching or updating FCM token: \(error)")
+        }
+    }
+    
+    
     func updateNonPremiumUserInfo(uid: String) async {
         do {
             let data: [String: Any] = [

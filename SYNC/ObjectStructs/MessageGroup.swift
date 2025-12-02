@@ -1,3 +1,6 @@
+import Foundation
+
+
 struct MessageGroup: Identifiable {
     let id: String
     let messages: [Message]

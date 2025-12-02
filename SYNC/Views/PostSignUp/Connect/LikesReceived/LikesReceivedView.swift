@@ -48,7 +48,7 @@ struct LikesReceivedView: View {
                 .h2Style()
                 .foregroundStyle(.syncBlack)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     private var likesReceivedContent: some View {
@@ -103,12 +103,6 @@ struct LikesReceivedView: View {
             .padding(.leading, 10)
         }
     }
-    
-    
-    
-    
-    
-
 }
 
 

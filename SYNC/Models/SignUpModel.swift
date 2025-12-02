@@ -72,49 +72,7 @@ final class SignUpModel: ObservableObject {
             print(error.localizedDescription)
         }
     }
-//    func fetchUserData() async {
-//        do {
-//            guard let currentUser = Auth.auth().currentUser else { return }
-//            let firestoreUser = try await DBUserManager.shared.getUser(uid: currentUser.uid)
-//            
-//            self.uid = currentUser.uid
-//            self.onboardingStep = firestoreUser.onboardingStep ?? .phone
-//            
-//            self.phoneNumber = firestoreUser.phoneNumber ?? ""
-//            self.email = firestoreUser.email ?? ""
-//            if let fullName = firestoreUser.name {
-//                let nameComponents = fullName.split(separator: " ")
-//                self.firstName = String(nameComponents.first ?? "")
-//                self.lastName = nameComponents.dropFirst().joined(separator: " ")
-//            } else {
-//                self.firstName = ""
-//                self.lastName = ""
-//            }
-//            self.dateOfBirth = firestoreUser.dateOfBirth ?? Calendar.current.date(byAdding: .year, value: -18, to: Date()) ?? Date()
-//            self.sex = firestoreUser.sex ?? "Male"
-//            self.location = firestoreUser.location ?? DBLocation()
-//            self.bio = firestoreUser.bio ?? ""
-//            self.fitnessTypes = firestoreUser.fitnessTypes ?? []
-//            self.fitnessGoals = firestoreUser.fitnessGoals ?? []
-//            self.fitnessLevel = firestoreUser.fitnessLevel ?? "Beginner"
-//            self.height = firestoreUser.height ?? 100
-//            self.weight = firestoreUser.weight ?? 0.0
-//            
-//            self.images = firestoreUser.images ?? []
-//            
-//            self.filteredAgeRange = firestoreUser.filteredAgeRange ?? CustomRange(min: 18, max: 99)
-//            self.filteredSex = firestoreUser.filteredSex ?? "Both"
-//            self.filteredMatchRadius = firestoreUser.filteredMatchRadius ?? 50.0
-//            self.filteredFitnessTypes = firestoreUser.filteredFitnessTypes ?? []
-//            self.filteredFitnessGoals = firestoreUser.filteredFitnessGoals ?? []
-//            self.filteredFitnessLevel = firestoreUser.filteredFitnessLevel ?? "Beginner"
-//            
-//            self.loadingMessage = "User data loaded successfully."
-//        } catch {
-//            print("Error fetching user data: \(error.localizedDescription)")
-//            self.loadingMessage = "Failed to load user data."
-//        }
-//    }
+    
     
     
     func saveOnboardingStep(uid: String, onboardingStep: OnboardingStep) async {
