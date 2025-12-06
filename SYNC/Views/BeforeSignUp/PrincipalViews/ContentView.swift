@@ -18,17 +18,20 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            if showCreateOrSignInView {
-                CreateOrSignInView(
-                    showCreateOrSignInView: $showCreateOrSignInView,
-                    isLoading: $isLoading,
-                    loadingViewFinishedLoading: $loadingViewFinishedLoading,
-                    bannedMessage: bannedMessage
-                )
-                .environmentObject(profileModel)
-                .environmentObject(chatRoomsManager)
-                .environmentObject(subscriptionModel)
-            } else {
+            if showCreateOrSignInView == true {
+                NavigationStack {
+                    
+                    CreateOrSignInView(
+                        showCreateOrSignInView: $showCreateOrSignInView,
+                        isLoading: $isLoading,
+                        loadingViewFinishedLoading: $loadingViewFinishedLoading,
+                        bannedMessage: bannedMessage
+                    )
+                    .environmentObject(profileModel)
+                    .environmentObject(chatRoomsManager)
+                    .environmentObject(subscriptionModel)
+                }
+            } else if showCreateOrSignInView == false {
                 TabbarView(
                     showCreateOrSignInView: $showCreateOrSignInView,
                     isLoading: $isLoading,

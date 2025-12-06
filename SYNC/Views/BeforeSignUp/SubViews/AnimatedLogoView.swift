@@ -17,50 +17,56 @@ struct AnimatedLogoView: View {
     
     
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Image("sync_badgeDark")
-                .resizable()
-                .frame(width: 300, height: 300)
+//        ZStack(alignment: .bottom) {
+//            Image("syncc_badge_dark")
+//                .resizable()
+//                .frame(width: 550, height: 310)
             
-            HStack(spacing: 40) {
-                if showS {
-                    Text("S")
-                        .h1Style()
-//                        .font(.system(size: 36))
-                }
-                
-                if showY {
-                    Text("Y")
-                        .h1Style()
-//                        .font(.system(size: 36))
-                        .transition(.scale.combined(with: .opacity))
-                }
-                
-                if showN {
-                    Text("N")
-                        .h1Style()
-//                        .font(.system(size: 36))
-                        .transition(.scale.combined(with: .opacity))
-                }
-                
-                if showFirstC {
-                    Text("C")
-                        .h1Style()
-//                        .font(.system(size: 36))
-                        .transition(.scale.combined(with: .opacity))
-                }
-                
-                if showSecondC {
-                    Text("C")
-                        .h1Style()
-//                        .font(.system(size: 36))
-                        .transition(.scale.combined(with: .opacity))
-                }
-            }
-            .padding(.top, 200)
-            .frame(width: 300, height: 300)
+        VStack {
+            Image("syncc_badge_dark")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+            
+//            HStack(spacing: 0) {
+                //                if showS {
+                //                    Text("S")
+                //                        .h1Style()
+                //                }
+                //
+                //                if showY {
+                //                    Text("y")
+                //                        .h1Style()
+                //                        .transition(.scale.combined(with: .opacity))
+                //                }
+                //
+                //                if showN {
+                //                    Text("n")
+                //                        .h1Style()
+                //                        .transition(.scale.combined(with: .opacity))
+                //                }
+                //
+                //                if showFirstC {
+                //                    Text("c")
+                //                        .h1Style()
+                //                        .transition(.scale.combined(with: .opacity))
+                //                }
+                //
+                //                if showSecondC {
+                //                    Text("c")
+                //                        .h1Style()
+                //                        .transition(.scale.combined(with: .opacity))
+                //                }
+//                VStack {
+//                    Text("Syncc")
+//                        .h1Style()
+//                    
+                    Text("Stay in Syncc, stay connected")
+                        .h2Style()
+//                }
+//            }
+//            .padding(.top, 220)
+//            .frame(width: 300, height: 300)
         }
-//        }
         .foregroundStyle(.syncBlack)
         .onChange(of: isExpanded) { oldValue, newValue in
             if newValue {
@@ -97,33 +103,31 @@ struct AnimatedLogoView: View {
 struct FullLogoView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
-            Image("sync_badgeDark")
+            Image("syncc_badge_dark")
                 .resizable()
-                .frame(width: 300, height: 300)
+                .frame(width: 550, height: 310)
             
-            HStack(spacing: 40) {
+            HStack(spacing: 0) {
                 Text("S")
                     .h1Style()
                 
-                
-                Text("Y")
+                Text("y")
                     .h1Style()
                     .transition(.scale.combined(with: .opacity))
                 
-                Text("N")
+                Text("n")
                     .h1Style()
                     .transition(.scale.combined(with: .opacity))
                 
-                Text("C")
+                Text("c")
                     .h1Style()
                     .transition(.scale.combined(with: .opacity))
                 
-                Text("C")
+                Text("c")
                     .h1Style()
                     .transition(.scale.combined(with: .opacity))
             }
-            .padding(.top, 200)
-            .frame(width: 300, height: 300)
+            
         }
         .foregroundStyle(.syncBlack)
     }

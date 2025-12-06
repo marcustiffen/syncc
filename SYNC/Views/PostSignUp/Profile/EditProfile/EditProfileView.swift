@@ -14,7 +14,7 @@ struct EditProfileView: View {
     var body: some View {
         VStack(spacing: 0) {
             headerSection
-                .padding(.top, 40)
+//                .padding(.top, 40)
             
             // Custom Tab Selector
             HStack(spacing: 0) {
@@ -39,7 +39,9 @@ struct EditProfileView: View {
                     .frame(maxWidth: .infinity)
                 }
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 5)
+            
+            
             // Tab Content
             if selectedTab == 0 {
                 ProfileCardView(user: profileModel.user, isCurrentUser: true, showButtons: false, showEditButton: true, likeAction: {}, dislikeAction: {})
@@ -49,11 +51,9 @@ struct EditProfileView: View {
                     .environmentObject(profileModel)
             }
         }
-        .padding([.horizontal, .top], 10)
+        .padding(.horizontal, 10)
         .background(Color.white.ignoresSafeArea())
-        .navigationBarBackButtonHidden(true)
         .navigationBarTitleDisplayMode(.inline)
-        .ignoresSafeArea(.container)
     }
     
     private var headerSection: some View {
@@ -71,6 +71,5 @@ struct EditProfileView: View {
         }
         .h1Style()
         .foregroundStyle(.syncBlack)
-        .padding(.bottom, 16)
     }
 }

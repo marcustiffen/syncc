@@ -13,12 +13,11 @@ struct ConnectionsView: View {
     @Binding var isLoading: Bool
     
     @State private var selectedTab = 0
-    let tabs = ["Connect", "Requests"]
+    let tabs = ["Discover", "Requests"]
     
     var body: some View {
         VStack {
-            filterView()
-                .padding(.top, 50)
+            titleView()
             
             HStack(spacing: 0) {
                 ForEach(0..<tabs.count, id: \.self) { index in
@@ -42,7 +41,7 @@ struct ConnectionsView: View {
                     .frame(maxWidth: .infinity)
                 }
             }
-            .padding(.top, 10)
+            .padding(.top, 5)
             
             if selectedTab == 0 {
                 DiscoverView(showCreateOrSignInView: $showCreateOrSignInView,
@@ -59,9 +58,9 @@ struct ConnectionsView: View {
         .padding(.horizontal, 10)
     }
     
-    private func filterView() -> some View {
+    private func titleView() -> some View {
         HStack {
-            Text("Discover")
+            Text("Connect")
             Spacer()
             
             if selectedTab == 0 {

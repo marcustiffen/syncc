@@ -53,6 +53,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				"Secrets/Secrets-Release.xcconfig",
+				"Secrets/Secrets-Staging.xcconfig",
 			);
 			target = EACA72A22CC90A64009E2C9B /* SYNC */;
 		};
@@ -242,7 +244,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					EACA72A22CC90A64009E2C9B = {
 						CreatedOnToolsVersion = 16.0;

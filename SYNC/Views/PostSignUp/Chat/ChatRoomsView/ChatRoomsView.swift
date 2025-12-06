@@ -13,7 +13,7 @@ struct ChatRoomsView: View {
     var body: some View {
         VStack {
             headerSection
-                .padding(.top, 50)
+//                .padding(.top, 50)
             
             ScrollView(.vertical) {
                 ForEach(chatRoomsManager.chatRooms) { chatroom in
@@ -30,7 +30,7 @@ struct ChatRoomsView: View {
         .overlay {
             if chatRoomsManager.chatRooms.isEmpty {
                 VStack(alignment: .center) {
-                    Image("sync_badgeDark")
+                    Image("syncc_badge_dark")
                         .resizable()
                         .frame(width: 200, height: 200)
                     

@@ -1,3 +1,6 @@
+import SwiftUI
+
+
 struct TappableTextView: View {
     let fullText: String
     let tappableTexts: [String]

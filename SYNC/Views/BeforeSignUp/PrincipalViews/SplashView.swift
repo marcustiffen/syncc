@@ -6,9 +6,9 @@ import SwiftUI
 struct SplashView: View {
     @State private var isActive: Bool = false
     @StateObject var networkManager = NetworkManager()
-
+    
     @StateObject var profileModel = ProfileModel()
-
+    
     @EnvironmentObject var chatRoomsManager: ChatRoomsManager
     @EnvironmentObject var likesReceivedViewModel: LikesReceivedViewModel
     @EnvironmentObject var subscriptionModel: SubscriptionModel
@@ -21,16 +21,14 @@ struct SplashView: View {
     @State private var bannedMessage: String = ""
     
     @State private var loadingMessage = ""
-
+    
     var body: some View {
         ZStack {
             if isActive {
-                NavigationStack {
-                    ContentView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading, bannedMessage: bannedMessage)
-                        .environmentObject(profileModel)
-                        .environmentObject(chatRoomsManager)
-                        .environmentObject(subscriptionModel)
-                }
+                ContentView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading, bannedMessage: bannedMessage)
+                    .environmentObject(profileModel)
+                    .environmentObject(chatRoomsManager)
+                    .environmentObject(subscriptionModel)
             } else {
                 splashView
             }
@@ -45,16 +43,15 @@ struct SplashView: View {
         .onAppear {
             Task {
                 await loadData()
-                withAnimation {
-                    isActive = true
-                }
+                try await Task.sleep(nanoseconds: 1_000_000_000)
+                isActive = true
             }
         }
         .fullScreenCover(isPresented: $isLoading) {} content: {
             LoadingView(isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading, loadingMessage: $loadingMessage)
         }
     }
-
+    
     private var splashView: some View {
         ZStack {
             Color.syncWhite

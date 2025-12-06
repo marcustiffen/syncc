@@ -147,16 +147,6 @@ class ProfileModel: ObservableObject {
     }
     
     func resetDailyLikes(uid: String) async {
-//        do {
-//            let resetData: [String: Any] = [
-//                "dailyLikes": 10, // Reset to 10 likes
-//                "lastLikeReset": Date()
-//            ]
-//            try await DBUserManager.shared.userDocument(uid: uid).setData(resetData, merge: true)
-//            print("✅ Daily likes reset successfully for user: \(uid)")
-//        } catch {
-//            print("❌ Error resetting daily likes: \(error.localizedDescription)")
-//        }
         await DBUserManager.shared.resetDailyLikesForUser(uid: uid)
     }
     

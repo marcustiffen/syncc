@@ -12,7 +12,6 @@ struct SignInView: View {
     @EnvironmentObject var signUpModel: SignUpModel
     @EnvironmentObject var profileModel: ProfileModel
     @EnvironmentObject var chatRoomsManager: ChatRoomsManager
-//    @EnvironmentObject var completeUsersModel: CompleteUsersModel
     
     
     @State private var email = ""
@@ -23,27 +22,56 @@ struct SignInView: View {
 
     
     var body: some View {
-        VStack(spacing: 40) {
+        VStack(spacing: 20) {
             HStack {
                 SyncBackButton { dismiss() }
                 Spacer()
             }
             
-            FullLogoView()
+            
+            AnimatedLogoView(isExpanded: false, animationDuration: 1.5)
+//                .padding(.bottom, 150)
+            
+            
+//            VStack(spacing: 0) {
+//                Image("syncc_badge_dark")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+                
+//                HStack(spacing: 0) {
+//                    Text("S")
+//                        .h1Style()
+//                    
+//                    Text("y")
+//                        .h1Style()
+//                        .transition(.scale.combined(with: .opacity))
+//                    
+//                    Text("n")
+//                        .h1Style()
+//                        .transition(.scale.combined(with: .opacity))
+//                    
+//                    Text("c")
+//                        .h1Style()
+//                        .transition(.scale.combined(with: .opacity))
+//                    
+//                    Text("c")
+//                        .h1Style()
+//                        .transition(.scale.combined(with: .opacity))
+//                }
+//            }
             
             inputFields
-                .padding(.horizontal, 20)
+                .padding(.top, 120)
             
             
-            Spacer()
             
         }
-        .navigationDestination(isPresented: $navigateToTabBarView, destination: {
-            TabbarView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
-                .environmentObject(profileModel)
-        })
+//        .navigationDestination(isPresented: $navigateToTabBarView, destination: {
+//            TabbarView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
+//                .environmentObject(profileModel)
+//        })
         .navigationBarBackButtonHidden(true)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 10)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             Color.syncWhite
@@ -62,7 +90,7 @@ struct SignInView: View {
     }
     
     
-    // MARK: - Input Fields
+
     private var inputFields: some View {
         VStack(spacing: 20) {
             CustomOnBoardingTextField(placeholder: "Email", image: "envelope.fill", text: $email)
@@ -83,18 +111,28 @@ struct SignInView: View {
 //                            completeUsersModel.setupAllListeners(currentUser: user)
                             
                         }
-                        navigateToTabBarView = true
-                        loadingViewFinishedLoading = true
+                        isLoading = false
+                        showCreateOrSignInView = false
+//                        navigateToTabBarView = true
+//                        loadingViewFinishedLoading = false
                     } catch {
                         showAlert = true
                     }
                 }
             } label: {
-                Text("Log In")
-                    .foregroundStyle(.syncBlack)
-                    .h2Style()
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity)
+                if !isLoading {
+                    Text("Log In")
+                        .foregroundStyle(.syncBlack)
+                        .h2Style()
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                } else {
+                    ProgressView()
+                        .foregroundStyle(.syncBlack)
+                        .h2Style()
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                }
             }
             .background(
                 Rectangle()

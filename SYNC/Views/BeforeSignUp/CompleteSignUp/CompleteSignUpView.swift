@@ -49,9 +49,9 @@ struct CompleteSignUpView: View {
                         await profileModel.setUserDeviceToken(uid: newUser.uid)
                         
                         // Hide the create/sign in view
-                        withAnimation {
+//                        withAnimation {
                             showCreateOrSignInView = false
-                        }
+//                        }
                         
                         // Signal that operations are complete
                         completedLoading = true
@@ -61,30 +61,6 @@ struct CompleteSignUpView: View {
                         isLoading = false
                     }
                 }
-//                Task {
-//                    do {
-//                        finalLoading = true
-//                        
-//                        let newUser = try await signUpModel.setUser()
-//                        profileModel.user = newUser
-//                        
-//                        ChatRoomsManager().startListening(for: newUser.uid)
-//                        completeUsersModel.setupAllListeners(currentUser: newUser)
-//                        
-//                        await profileModel.setUserDeviceToken(uid: newUser.uid)
-//                        // Hide the create/sign in view
-//                        withAnimation {
-//                            showCreateOrSignInView = false
-//                        }
-//                        
-//                        // Signal that operations are complete
-//                        completedLoading = true
-//                        finalLoading = false
-//                    } catch {
-//                        print("Error during sign up: \(error)")
-//                        isLoading = false
-//                    }
-//                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }

@@ -81,9 +81,9 @@ struct ConfirmDeletionView: View {
             
             Spacer()
         }
-        .navigationDestination(isPresented: $navigateToCreateOrSignInView, destination: {
-            CreateOrSignInView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: .constant(false), loadingViewFinishedLoading: .constant(false), bannedMessage: "")
-        })
+//        .navigationDestination(isPresented: $navigateToCreateOrSignInView, destination: {
+//            CreateOrSignInView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: .constant(false), loadingViewFinishedLoading: .constant(false), bannedMessage: "")
+//        })
         .padding(.horizontal, 10)
         .background(Color.white.ignoresSafeArea())
         .edgesIgnoringSafeArea(.bottom)
@@ -108,7 +108,7 @@ struct ConfirmDeletionView: View {
         do {
             try await profileModel.deleteUser(uid: userId, email: email, password: password)
             // Only navigate if deletion was successful
-            navigateToCreateOrSignInView = true
+//            navigateToCreateOrSignInView = true
             showCreateOrSignInView = true
         } catch {
             // Handle the error properly

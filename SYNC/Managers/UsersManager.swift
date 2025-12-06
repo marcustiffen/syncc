@@ -82,7 +82,7 @@ class UsersManager: ObservableObject {
             targetCount: targetCount,
             reset: reset,
             attempts: 0,
-            accumulatedUsers: [], // ✅ Start with empty array
+            accumulatedUsers: [],
             completion: completion
         )
     }
@@ -173,7 +173,7 @@ class UsersManager: ObservableObject {
                             targetCount: targetCount,
                             reset: false,
                             attempts: attempts + 1,
-                            accumulatedUsers: newAccumulated, // ✅ Pass accumulated users
+                            accumulatedUsers: newAccumulated,
                             completion: completion
                         )
                     } else {

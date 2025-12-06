@@ -8,6 +8,7 @@ struct CreateOrSignInView: View {
     @Binding var isLoading: Bool
     @Binding var loadingViewFinishedLoading: Bool
     @EnvironmentObject var profileModel: ProfileModel
+    @EnvironmentObject var chatRoomsManager: ChatRoomsManager
     @EnvironmentObject var subscriptionModel: SubscriptionModel
     
     @StateObject var signUpModel = SignUpModel()
@@ -26,24 +27,26 @@ struct CreateOrSignInView: View {
     
     
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 20) {
             AnimatedLogoView(isExpanded: showExpandedLogo, animationDuration: 1.5)
-                .offset(y: logoOffset)
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now()) {
-                        withAnimation(.easeIn(duration: 1)) {
-                            showExpandedLogo = true
-                            logoOffset = -50
-                            logoInPosition = true
-                        }
-                    }
-                }
+                .padding(.bottom, 150)
+
+//                .offset(y: logoOffset)
+//                .onAppear {
+//                    DispatchQueue.main.asyncAfter(deadline: .now()) {
+//                        withAnimation(.easeIn(duration: 1)) {
+//                            showExpandedLogo = true
+//                            logoOffset = -50
+//                            logoInPosition = true
+//                        }
+//                    }
+//                }
             
+                        
             
-            
-            if logoInPosition {
-                homeOptionFields
-            }
+//            if logoInPosition {
+            homeOptionFields
+//            }
         }
         .sheet(isPresented: $isPresentEULA) {
             NavigationStack {
@@ -55,10 +58,11 @@ struct CreateOrSignInView: View {
         }
         .sheet(isPresented: $isPresentPrivacyPolicy) {
             NavigationStack {
-                WebView(url: URL(string: "https://www.freeprivacypolicy.com/live/eb4dff28-4b8f-49aa-8154-179310a1ec20")!)
-                    .ignoresSafeArea()
-                    .navigationTitle("Privacy Policy")
-                    .navigationBarTitleDisplayMode(.inline)
+                WebView(url: URL(string: "https://www.syncc.com.au/privacy")!)
+//                WebView(url: URL(string: "https://www.freeprivacypolicy.com/live/eb4dff28-4b8f-49aa-8154-179310a1ec20")!)
+//                    .ignoresSafeArea()
+//                    .navigationTitle("Privacy Policy")
+//                    .navigationBarTitleDisplayMode(.inline)
             }
         }
         .onAppear {
@@ -70,7 +74,7 @@ struct CreateOrSignInView: View {
                 Text(bannedMessage)
             }
         }
-        .padding(.horizontal, 40)
+        .padding(.horizontal, 10)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundView)
     }
@@ -83,37 +87,28 @@ struct CreateOrSignInView: View {
     
     private var homeOptionFields: some View {
         VStack(spacing: 20) {
-            VStack(alignment: .center) {
-                Text("By creating an account with with Syncc")
-                    .bodyTextStyle()
-                
-                Group {
-                    Text("you agree to our ") + Text("Privacy policy ").bold() + Text("and agree")
-                }
-                .bodyTextStyle()
-                .onTapGesture {
-                    isPresentPrivacyPolicy = true
-                }
-                
-                Group {
-                    Text("to our ") + Text("End User License Agreement (EULA)").bold()
-                }
-                .bodyTextStyle()
-                .onTapGesture {
-                    isPresentEULA = true
-                }
+            
+            VStack(alignment: .center, spacing: 4) {
+                TappableTextView(
+                    fullText: "By creating an account with Syncc, you agree to our Privacy Policy and End User License Agreement (EULA)",
+                    tappableTexts: ["Privacy Policy", "End User License Agreement (EULA)"],
+                    onTap: { tappedText in
+                        if tappedText == "Privacy Policy" {
+                            isPresentPrivacyPolicy = true
+                        } else if tappedText == "End User License Agreement (EULA)" {
+                            isPresentEULA = true
+                        }
+                    }, font: Font.custom("Poppins-Regular", size: 12)
+                )
             }
-            .multilineTextAlignment(.center)
-            .font(.caption)
-            .foregroundStyle(.syncBlack)
             .padding(.vertical, 6)
             .frame(maxWidth: .infinity)
-            .cornerRadius(8)
             
             
             NavigationLink {
                 OnBoardingManagerView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
                     .environmentObject(signUpModel)
+                    .environmentObject(chatRoomsManager)
                     .environmentObject(profileModel)
             } label: {
                 Text(signUpModel.onboardingStep == .phone ? "Create account" : "Continue account creation")
@@ -133,6 +128,10 @@ struct CreateOrSignInView: View {
             
             NavigationLink {
                 SignInView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: $isLoading, loadingViewFinishedLoading: $loadingViewFinishedLoading)
+                    .environmentObject(signUpModel)
+                    .environmentObject(profileModel)
+                    .environmentObject(chatRoomsManager)
+                    .environmentObject(subscriptionModel)
             } label: {
                 Text("Sign in")
                     .foregroundStyle(.syncBlack)
@@ -144,3 +143,8 @@ struct CreateOrSignInView: View {
         }
     }
 }
+
+
+
+
+

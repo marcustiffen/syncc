@@ -98,7 +98,7 @@ struct MyActivityView: View {
                 }
                 
                 if !viewModel.hasMoreActivities && !viewModel.activities.isEmpty {
-                    Text("No more activities to show!")
+                    Text("No activities to show!")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.vertical, 20)

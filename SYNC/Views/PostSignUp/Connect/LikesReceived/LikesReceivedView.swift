@@ -39,16 +39,15 @@ struct LikesReceivedView: View {
     
     private var emptyStateView: some View {
         VStack {
-            Image("sync_badgeDark")
+            Image("syncc_badge_dark")
                 .resizable()
-                .frame(width: 200, height: 200)
+                .aspectRatio(contentMode: .fit)
             
             Text("No Syncc requests received!")
                 .multilineTextAlignment(.center)
                 .h2Style()
                 .foregroundStyle(.syncBlack)
         }
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     private var likesReceivedContent: some View {

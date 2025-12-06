@@ -6,16 +6,16 @@ struct ActivityView: View {
     @StateObject private var viewModel = ActivityViewModel()
     @EnvironmentObject var profileModel: ProfileModel
     
-    // ✅ NEW: Track if search bar is focused
+
     @FocusState private var isSearchFocused: Bool
     
     var body: some View {
         VStack(spacing: 0) {
             titleView()
-                .padding(.top, 50)
+//                .padding(.top, 50)
                 .padding(.horizontal, 10)
             
-            // ✅ NEW: Search bar with explicit search button
+
             searchBarView()
                 .padding(.horizontal, 10)
                 .padding(.top, 8)
@@ -65,7 +65,7 @@ struct ActivityView: View {
             Task {
                 if let location = profileModel.user?.location {
                     viewModel.updateUserLocation(location)
-                    print("✅ User location set on appear: \(location.name)")
+                    print("User location set on appear: \(location.name)")
                 }
                 
                 await viewModel.loadInitialActivities(currentUserId: profileModel.user?.uid ?? "")
@@ -76,7 +76,7 @@ struct ActivityView: View {
         }
     }
     
-    // ✅ NEW: Search bar with explicit action button
+
     private func searchBarView() -> some View {
         HStack(spacing: 8) {
             HStack(spacing: 8) {
@@ -110,7 +110,7 @@ struct ActivityView: View {
                     .fill(Color.gray.opacity(0.1))
             )
             
-            // ✅ Search button - only show when there's text
+
             if !viewModel.searchText.isEmpty {
                 Button {
                     performSearch()
@@ -131,7 +131,7 @@ struct ActivityView: View {
         .animation(.easeInOut(duration: 0.2), value: viewModel.searchText.isEmpty)
     }
     
-    // ✅ NEW: Perform search action
+
     private func performSearch() {
         isSearchFocused = false
         viewModel.executeSearch()
@@ -147,7 +147,7 @@ struct ActivityView: View {
                 viewModel.showFilterSheet = true
             } label: {
                 ZStack(alignment: .topTrailing) {
-                    Image(systemName: "slider.horizontal.3")
+                    Image(systemName: "slider.horizontal.below.rectangle")
                     
                     if viewModel.filter.isActive {
                         Circle()
@@ -165,7 +165,7 @@ struct ActivityView: View {
     private func activitiesScrollView() -> some View {
         ScrollView {
             LazyVStack(spacing: 16) {
-                // ✅ Show active search indicator
+
                 if !viewModel.filter.searchText.isEmpty {
                     HStack {
                         Text("Results for: \"\(viewModel.filter.searchText)\"")
@@ -207,7 +207,7 @@ struct ActivityView: View {
                         Spacer()
                     }
                 } else if !viewModel.hasMoreActivities && !viewModel.filteredActivities.isEmpty {
-                    Text("No more activities")
+                    Text("No more upcoming activities")
                         .foregroundColor(.secondary)
                         .padding()
                 }

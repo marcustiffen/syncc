@@ -1,3 +1,8 @@
+import EventKit
+import MapKit
+import SwiftUI
+
+
 struct ParticipantsPreviewView: View {
     let participantIds: [String]
     let maxVisible: Int = 3

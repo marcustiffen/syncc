@@ -115,18 +115,18 @@ class CommentsManager: ObservableObject {
             .document(comment.id)
             .setData(from: comment)
         
-        // ✅ Get activity participants (creator + participants)
+
         var participantIds = activity.participants
         if !participantIds.contains(activity.creatorId) {
             participantIds.append(activity.creatorId)
         }
         
-        // ✅ Filter out the current user
+
         let otherParticipantIds = participantIds.filter { $0 != userId }
         
         print("📤 Sending notifications to \(otherParticipantIds.count) participants")
         
-        // ✅ Fetch and send notifications to participants
+
         for participantId in otherParticipantIds {
             do {
                 let user = try await DBUserManager.shared.getUser(uid: participantId)
@@ -143,7 +143,7 @@ class CommentsManager: ObservableObject {
                 ) { result in
                     switch result {
                     case .success:
-                        print("✅ Notification sent to user \(user.uid)")
+                        print("Notification sent to user \(user.uid)")
                     case .failure(let error):
                         print("❌ Failed to send notification to user \(user.uid): \(error.localizedDescription)")
                     }

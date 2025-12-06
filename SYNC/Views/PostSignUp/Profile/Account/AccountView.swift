@@ -31,13 +31,13 @@ struct AccountView: View {
         .sheet(isPresented: $isPresentEULA) {
             WebView(url: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
         }
-        .navigationDestination(isPresented: $navigateToCreateOrSignInView, destination: {
-            CreateOrSignInView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: .constant(false), loadingViewFinishedLoading: .constant(false), bannedMessage: "")
-                .environmentObject(profileModel)
-        })
-        .navigationDestination(isPresented: $navigateToConfirmDeletionView, destination: {
-            ConfirmDeletionView(showCreateOrSignInView: $showCreateOrSignInView)
-        })
+//        .navigationDestination(isPresented: $navigateToCreateOrSignInView, destination: {
+//            CreateOrSignInView(showCreateOrSignInView: $showCreateOrSignInView, isLoading: .constant(false), loadingViewFinishedLoading: .constant(false), bannedMessage: "")
+//                .environmentObject(profileModel)
+//        })
+//        .navigationDestination(isPresented: $navigateToConfirmDeletionView, destination: {
+//            ConfirmDeletionView(showCreateOrSignInView: $showCreateOrSignInView)
+//        })
         .padding(.horizontal, 10)
         .background(Color.white.ignoresSafeArea())
         .edgesIgnoringSafeArea(.bottom)
@@ -113,10 +113,12 @@ struct AccountView: View {
                     title: "Log Out",
                     color: .blue,
                     action: {
+//                        showCreateOrSignInView = true
                         Task {
                             do {
                                 try profileModel.signOut()
-                                navigateToCreateOrSignInView = true
+//                                navigateToCreateOrSignInView = true
+                                showCreateOrSignInView = true
                             } catch {
                                 print("Logout failed: \(error)")
                             }
@@ -125,14 +127,16 @@ struct AccountView: View {
                 )
                 
                 // Delete Account Option
-                ProfileOptionView(
-                    icon: "trash",
-                    title: "Delete Account",
-                    color: .red,
-                    action: {
-                        showDeleteConfirmation = true
-                    }
-                )
+//                ProfileOptionView(
+//                    icon: "trash",
+//                    title: "Delete Account",
+//                    color: .red,
+//                    action: {
+//                        showDeleteConfirmation = true
+//                    }
+//                )
+                ProfileOptionView(icon: "trash", title: "Delete Account", color: .red, destination: ConfirmDeletionView(showCreateOrSignInView: $showCreateOrSignInView), action: nil)
+
                 
             }
             .padding(.horizontal, 20)
