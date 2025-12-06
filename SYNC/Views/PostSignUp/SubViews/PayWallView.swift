@@ -46,7 +46,7 @@ struct PayWallView: View {
                 .padding(.bottom, 20)
                 
                 // Likes Reset Timer
-                if !timeUntilReset.isEmpty {
+                if !timeUntilReset.isEmpty && profileModel.user?.dailyLikes == 0 {
                     HStack(spacing: 8) {
                         Image(systemName: "clock.fill")
                             .font(.system(size: 14))
@@ -68,8 +68,8 @@ struct PayWallView: View {
                 // Features List
                 VStack(alignment: .leading, spacing: 16) {
                     FeatureRow(icon: "hand.thumbsup.fill", text: "Send Unlimited Syncc Requests")
-                    FeatureRow(icon: "figure.run", text: "See Incoming Syncc Requests")
                     FeatureRow(icon: "slider.horizontal.3", text: "Custom Filter Options")
+                    FeatureRow(icon: "figure.run", text: "See Incoming Syncc Requests")
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 24)

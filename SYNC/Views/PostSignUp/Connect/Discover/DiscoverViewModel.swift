@@ -120,7 +120,7 @@ class DiscoverViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Pagination Logic
+
     
     func shouldLoadMore(currentUser: DBUser) -> Bool {
 

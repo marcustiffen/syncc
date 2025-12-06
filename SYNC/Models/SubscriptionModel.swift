@@ -7,9 +7,9 @@ class SubscriptionModel: ObservableObject {
     @Published var subscriptionDetails: String = "No active subscription"
     
     
-    init() {
-        checkSubscriptionStatus()
-    }
+//    init() {
+//        checkSubscriptionStatus()
+//    }
     
     func checkSubscriptionStatus() {
         Purchases.shared.getCustomerInfo { [weak self] (customerInfo, error) in
